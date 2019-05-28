@@ -20,6 +20,5 @@
     },
     "web_accessible_resources": [
         "frame.html", "modal.html"
-    ],
-    "options_page": "options.html"
+    ]
 }
