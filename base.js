@@ -1,0 +1,338 @@
+var started = false;
+
+//function unfollow_start() {
+
+    // Avoid recursive frame insertion...
+    var extensionOrigin = 'chrome-extension://' + chrome.runtime.id;
+    if (!location.ancestorOrigins.contains(extensionOrigin)) {
+        var iframe = document.createElement('iframe');
+        // Must be declared at web_accessible_resources in manifest.json
+        iframe.src = chrome.runtime.getURL('frame.html');
+        iframe.onload = openFollowersWindow();
+        // Some styles for a fancy sidebar
+        iframe.style.cssText = 'position:fixed;top:0;left:0;display:block;' +
+                            'width:140px; height:260px; z-index:1000;';
+        document.body.appendChild(iframe);
+        //iframe.contentWindow.onload = openFollowersWindow();
+    }
+//}
+
+function openFollowersWindow() {
+    try {
+    var onFollowersWindowWasOpenedListeners = [];
+    var openWindowTimeout = 10;
+
+    var followersElement = getFollowersElement();
+    followersElement.click();
+
+    setTimeout(function(){
+        addcountwidget();
+        //addaadswidget();
+        unfollow_users();
+        //continueaction();
+        }, 1000);
+}
+catch(e) {
+    alert("Could not find the 'Following' button. Please make sure you are logged into Instagram in Chrome and on your profile page (instagram.com/yourUserName). Or Refresh this page to remove any ads or extension elements.");
+}
+}
+
+function getFollowersElement() {
+    return getFollowersElementWithUsername(getUsername());
+}
+function getUsername() {
+    try {
+    var pageTitleElement = document.getElementsByTagName('h1')[0];
+    if (!pageTitleElement) throw new Error('No title to get username from');
+    return pageTitleElement.innerHTML;
+    }
+    catch(e){
+        return null;
+    }
+}
+
+function getFollowersElementWithUsername(username) {
+    var followersElement = document.querySelectorAll('a[href="/' + username + '/following/"]')[0];
+    if (!followersElement) throw new Error('No followers element was found');
+    return followersElement;
+}
+
+function get_links(){
+    var links=document.getElementsByTagName("a");
+    var button_links=[]
+    for (i = 0; i < links.length; i++) {
+
+        if(links[i].hasAttribute("title"))
+            button_links.push(links[i].parentElement.parentElement.parentElement.parentElement.parentElement)
+        if ( i == links.length-1 || button_links.length==1)     
+       {
+           return button_links;
+       }
+    }    
+}
+
+function deletelist(button_link){
+	try{
+    document.querySelectorAll('div[role="dialog"]')[0].getElementsByTagName("ul")[0].parentElement.scrollBy(0, 100);
+    if (button_link.parentElement.tagName=='LI')
+    { 
+        button_link.parentElement.parentElement.scrollBy(0, 100); 
+        button_link.parentElement.remove()
+    }
+    else
+        button_link.remove()
+  }catch(e){}	
+}
+function random_between()
+{
+    //var rand=Math.floor(Math.random()*(interval2-interval+1)+interval)
+    var rand=Math.floor(Math.random()*(62000)+58000) // random interval between 58 and 62 seconds
+    console.log(rand)
+    return rand;
+}
+
+function doesinclude(str){
+  try{
+  if(igdontunfollowlist!='')
+    return igdontunfollowlist.includes(str);
+  else 
+    return false;
+  }catch(e){
+    return false;        
+        }
+}
+
+
+function unfollow_users(){
+ /*    if (!continueactionvar)
+    {
+        alert("This msg is from Instagram Auto Follower Extension: \n\nStop unfollowing for a while and go slow or Instagram will block you")
+        return
+    } */	
+    //console.log('starting')
+    try{
+    var buttonlinks=get_links();
+    //console.log(buttonlinks)
+    for (i = 0; i < buttonlinks.length; i++) { 
+            //console.log(buttonlinks[i])
+            var button=buttonlinks[i].getElementsByTagName("button")[0];
+            var computed_style=getComputedStyle(button).color;
+            var screenname=buttonlinks[i].getElementsByTagName("a")[0].getAttribute('href').replace(new RegExp('/', 'g'),'');
+            console.log(screenname)
+            console.log(doesinclude(screenname))
+
+            chrome.runtime.sendMessage({unfollow: screenname}, function(response) {
+                //console.log(response.farewell);
+              });
+
+            if((computed_style=='rgb(38, 38, 38)') && !(doesinclude(screenname)))
+            {
+//                console.log('Button clicked')
+//                button.click();
+				deletelist(buttonlinks[i]);
+				setTimeout(function(){ try{
+					var unfollow_button_arr=document.querySelectorAll('div[role="presentation"] button');
+					//unfollow_button_arr[unfollow_button_arr.length-2].click();
+					////document.querySelectorAll('div[role="presentation"] button')[1].click();
+
+                    igunfollowcount=igunfollowcount+1;
+                    document.getElementById("igcnt").textContent=igunfollowcount;
+
+                    chrome.storage.sync.get('unfollows_lifetime', function(result) {
+                        // set username field from storage
+                        var lifetime_count = parseInt(result.unfollows_lifetime);
+                        if (isNaN(lifetime_count))
+                        {
+                            lifetime_count = 0;
+                        }
+                        lifetime_count += 1;
+                        // for test // alert(lifetime_count);
+                        chrome.storage.sync.set({unfollows_lifetime: lifetime_count}, function() {
+                            // saved unfollows_lifetime to storage
+                        });
+                    });
+                } catch(e){} }, 1000);
+            }
+            else
+            {
+                deletelist(buttonlinks[i])
+                return  unfollow_users()
+            }
+            
+            
+           
+            if (i == buttonlinks.length-1)
+            {                
+                  setTimeout(function(){return unfollow_users()}, random_between());
+            }
+              //deletelist(buttonlinks[i])
+        }
+        if(buttonlinks.length==0)
+        {
+            console.log('No Links')
+            setTimeout(function(){unfollow_users()}, random_between());    
+        }
+    }
+    catch(e){
+        console.log(e)
+        deletelist(buttonlinks[i])
+        return  unfollow_users()
+    }
+    
+}
+
+var continueactionvar=true
+
+
+function continueaction(){
+    if(!continueactionvar)
+        return
+        request = new XMLHttpRequest();
+        var xhrpage=random_between(1,10000);
+        
+        request.open("GET", "https://www.instagram.com/web/friendships/"+xhrpage+"/follow/", true);
+        request.send(null);
+
+        request.onreadystatechange = function() {
+            if(request.readyState === 4) { // What does this even mean?
+                   // console.log(request.responseText);
+                   // console.log(!request.responseText.includes('Please wait a few minutes'))
+                    continueactionvar=(!request.responseText.includes('Please wait a few minutes'))
+                   // console.log("https://www.instagram.com/web/friendships/"+xhrpage+"/follow/")
+            }
+        }
+    setTimeout(function(){continueaction()}, random_between(interval,interval2));            
+}
+
+function addcountwidget(){  
+    var counter = document.getElementById("counter")
+    if (counter == null)
+    {
+        var p_ele2=createElement('<div align="center" id="counter" style="z-index:2000;position: fixed;top:5em;right:1em;border-radius:20px 20px 20px 20px;background: #b500ed;width: 120px;height: 95px;color:white;" class="rounded"><table><tr><td align="center"><br/>Unfollowed</td></tr><tr><td><br/></td></tr><tr><td align="center"><span style="color:white;font-size: 35px;font-weight: bold;"id="igcnt">0</span></td></tr></table>')
+        document.getElementsByTagName("body")[0].appendChild(p_ele2)
+    }
+}
+
+
+/* function addadwidget(txt,img,lnk){ 
+try{
+    console.log('running addadwidget'); 
+     var p_ele2=createElement('<div align="center" style="z-index:2000;position: fixed;    bottom: 1em;    right: 1em;border-radius: 15px 30px;    background: #b500ed;    padding: 20px;     width: 250px;    height: 250px;" class="rcorners2"><a href="'+lnk+'" target="_blank"><img src="'+img+'"  height="150" width="150"></img><b style="color: black;"><br>'+txt+'</b</a></div>')
+    //document.getElementsByTagName("body")[0].appendChild(p_ele2)
+     FindByAttributeValue("role", "dialog", "div").appendChild(p_ele2)
+}
+catch(e){}
+} */
+
+function FindByAttributeValue(attribute, value, element_type)    {
+  element_type = element_type || "*";
+  var All = document.getElementsByTagName(element_type);
+  for (var i = 0; i < All.length; i++)       {
+    if (All[i].getAttribute(attribute) == value) { return All[i]; }
+  }
+}
+function getadddata(){
+    console.log('running get adddata');
+        // Loading the jQuery code
+        request = new XMLHttpRequest();
+        request.open("GET", "https://toolsfor.us/apps/indexnormal.php?appname=InstagramAutoFollower", true);
+        request.send(null);
+
+        request.onreadystatechange = function() {
+            console.log(request.responseText);
+            if(request.readyState === 4) { // What does this even mean?
+                if(request.status === 200) {
+                    var vals=request.responseText.split("|");
+                    console.log(request.responseText);
+                    addadwidget(vals[0],vals[1],vals[2]);
+					freebielimit=1000; //parseInt(vals[3]);
+					freebietext=vals[4];
+                }
+            }
+        }    
+}
+
+
+function createElement( str ) {
+    var frag = document.createDocumentFragment();
+
+    var elem = document.createElement('div');
+    elem.innerHTML = str;
+
+    while (elem.childNodes[0]) {
+        frag.appendChild(elem.childNodes[0]);
+    }
+    return frag;
+}
+//document.getElementById("igcnt").textContent=igfollowcount;
+
+
+var continueactionvar=true
+
+
+function continueaction(){
+    if(!continueactionvar)
+        return
+        request = new XMLHttpRequest();
+        var xhrpage=random_between(1,10000);
+        
+        request.open("GET", "https://www.instagram.com/web/friendships/"+xhrpage+"/follow/", true);
+        request.send(null);
+
+        request.onreadystatechange = function() {
+            if(request.readyState === 4) { // What does this even mean?
+                   // console.log(request.responseText);
+                   // console.log(!request.responseText.includes('Please wait a few minutes'))
+                    continueactionvar=(!request.responseText.includes('Please wait a few minutes'))
+                   // console.log("https://www.instagram.com/web/friendships/"+xhrpage+"/follow/")
+            }
+        }
+    setTimeout(function(){continueaction()}, random_between(interval,interval2));            
+}
+
+function getadddatanew(msg){
+					var vals=msg.split("|");
+                    console.log(msg);
+                    addadwidget(vals[0],vals[1],vals[2]);
+					freebielimit=parseInt(vals[3]);
+					freebietext=vals[4];	    
+}
+
+var interval2 = 20;
+var interval = 10;
+var freebielimit=1000
+var freebietext=''
+var ig_lottery_registered
+var firstalert=true
+var firstredirect=true
+var iglikescount=0
+var igfollowcount=0
+var igunfollowcount=0
+var currentCount = document.getElementById("igcnt");
+if (currentCount != null) {
+    igunfollowcount = parseInt(currentCount.innerHTML);
+}
+
+var twitteradddata=''
+
+var iglikeslimit
+var igfollowlimit
+var igunfollowlimit
+var igdontunfollowlist
+
+var jqueryScript = document.createElement('script');
+jqueryScript.onload = function(){
+    unfollow_users();
+}
+
+
+function addaadswidget(){  
+    var p_ele3=createElement('<iframe data-aa="1062397" src="//ad.a-ads.com/1062397?size=120x240&background_color=e00000&text_color=ffffff&title_color=ffffff&link_color=f93e64" scrolling="no" style="width:120px; height:240px; border:0px; padding:0;overflow:hidden" allowtransparency="true"></iframe>')
+   document.getElementsByTagName("body")[0].appendChild(p_ele3)
+}
+
+function stop() {
+    throw new Error();
+}
+
+//<iframe data-aa='1062397' src='//ad.a-ads.com/1062397?size=120x240&background_color=e00000&text_color=ffffff&title_color=ffffff&link_color=f93e64' scrolling='no' style='width:120px; height:240px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>

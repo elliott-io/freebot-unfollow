@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+        <meta name="propeller" content="37ff94fc76cb760fe58f16c3744286bd">
+        <style>
+            button {
+                height: 30px;
+                width: 130px;
+                outline: none;
+                border: none;
+                color: white;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                border-radius: 15px;
+                cursor: pointer;
+            }
+            .startButton { background-color: forestgreen; }
+            .stopButton { background-color: tomato; }
+        </style>
+    </head>
+    <body style="width:400px">
+        <div>
+            <h1>InstaUnfollow</h1>
+            <h2>Free, unlimited, auto-unfollower for Instagram</h2>
+            <!-- <h3>Private - we don't store any data, we don't even have servers or a cloud. Everything runs in your browser, to keep you safe and secure</h3>
+            <h4>Powered by Ads</h4>
+            <h4>Recommended to run in separate window</h4> -->
+            <h3 id="lifetime_count">Lifetime Unfollows: </h3>
+        </div>
+        <div>
+            <h3>Instagram Username (not email):</h3>
+            <input id="username" style="width:100%" value="username (not email)" type="text"/>
+        </div>
+        <button id="startButton" class="button startButton" cursor>Start</button>
+        <button id="stopButton" class="button stopButton">Pause</button>
+        <div>
+            <h2>Starts in new window</h2>
+        </div>
+    </body>
+    <script src="popup.js"></script>
+    </html>
