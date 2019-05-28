@@ -123,7 +123,7 @@ function unfollow_users(){
 
             chrome.runtime.sendMessage({unfollow: screenname}, function(response) {
                 //console.log(response.farewell);
-              });
+            });
 
             if((computed_style=='rgb(38, 38, 38)') && !(doesinclude(screenname)))
             {
@@ -162,8 +162,11 @@ function unfollow_users(){
             
            
             if (i == buttonlinks.length-1)
-            {                
-                  setTimeout(function(){return unfollow_users()}, random_between());
+            {
+                let timeout = random_between();
+                //alert(timeout);
+                updateProgress(timeout);
+                //setTimeout(function(){return unfollow_users()}, timeout);
             }
               //deletelist(buttonlinks[i])
         }
@@ -220,20 +223,30 @@ function loadjscssfile(filename, filetype){
         document.getElementsByTagName("head")[0].appendChild(fileref)
 }
 
-function updateProgress() { 
+function updateProgress(timeout) { 
     var element = document.getElementById("myprogressBar");    
-    var width = 1; 
-    var identity = setInterval(scene, 10); 
+    var width = 100.0; 
+    // total_timeout = 114751
+    //alert(timeout)
+    var timeout_remaining = timeout
+    let updateInterval = 100;
+    var identity = setInterval(scene, updateInterval); 
     function scene() { 
-      if (width >= 100) { 
+      if (width <= 0) { 
         clearInterval(identity); 
+        //width = 100.0;
+        unfollow_users();
       } else { 
-        width++;  
-        element.style.width = width + '%';  
-        element.innerHTML = width * 1  + '%'; 
+        //width--;
+        //alert(1000 / timeout);
+        timeout_remaining -= updateInterval;
+        width = (timeout_remaining / timeout) * 100.0;
       } 
+      //alert(width)
+      element.style.width = width + '%';  
+      element.innerHTML = width * 1  + '%'; 
     } 
-  } 
+} 
 
 function addcountwidget(){  
     var counter = document.getElementById("counter")
@@ -243,8 +256,8 @@ function addcountwidget(){
         //loadjscssfile("progressbar.css", "css") ////dynamically load and add this .css file        
 
         var p_ele2=createElement('<div align="center" id="counter" style="z-index:2000;position: fixed;top:5em;right:1em;border-radius:20px 20px 20px 20px;background: #b500ed;width: 120px;height: 150px;color:white;" class="rounded"><table><tr><td align="center"><br/>Unfollowed</td></tr><tr><td><br/></td></tr><tr><td align="center"><span style="color:white;font-size: 35px;font-weight: bold;"id="igcnt">0</span></td></tr><tr/></table>' +
-        '<div id="Progress_Status" style="width: 50%; background-color: #ddd; ">' +
-        '<div id="myprogressBar" style="width: 1%; height: 35px; background-color: #4CAF50; text-align: center; line-height: 32px; color: black; "></div> ' +
+        '<div id="Progress_Status" style="width: 80%; background-color: #ddd; ">' +
+        '<div id="myprogressBar" style="width: 100%; height: 10px; background-color: #4CAF50; text-align: center; line-height: 32px; color: black; "></div> ' +
         '</div>' +
         '</div>' +
         // '<script>' +
@@ -271,8 +284,8 @@ function addcountwidget(){
         // '</div>');
         document.getElementsByTagName("body")[0].appendChild(p_ele2)
 
-        updateProgress();
-        
+        //updateProgress(50);
+
         // progressbar.js@1.0.0 version is used
         // Docs: http://progressbarjs.readthedocs.org/en/1.0.0/
 
