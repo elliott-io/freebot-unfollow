@@ -19,6 +19,13 @@ window.onload = function(element) {
         // show count with commas
         lifetime_count.innerText = "Lifetime Unfollows: " + parseFloat(result.unfollows_lifetime).toLocaleString('en-US');
     });
+    var circle = new ProgressBar.Circle('#progress', {
+        color: '#FCB03C',
+        duration: 3000,
+        easing: 'easeInOut'
+    });
+
+    circle.animate(1);
 }
 function unfollow() {
     // run unfollow script
