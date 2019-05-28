@@ -204,20 +204,95 @@ function continueaction(){
     setTimeout(function(){continueaction()}, random_between(interval,interval2));            
 }
 
+function loadjscssfile(filename, filetype){
+    if (filetype=="js"){ //if filename is a external JavaScript file
+        var fileref=document.createElement('script')
+        fileref.setAttribute("type","text/javascript")
+        fileref.setAttribute("src", filename)
+    }
+    else if (filetype=="css"){ //if filename is an external CSS file
+        var fileref=document.createElement("link")
+        fileref.setAttribute("rel", "stylesheet")
+        fileref.setAttribute("type", "text/css")
+        fileref.setAttribute("href", filename)
+    }
+    if (typeof fileref!="undefined")
+        document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+
+function updateProgress() { 
+    var element = document.getElementById("myprogressBar");    
+    var width = 1; 
+    var identity = setInterval(scene, 10); 
+    function scene() { 
+      if (width >= 100) { 
+        clearInterval(identity); 
+      } else { 
+        width++;  
+        element.style.width = width + '%';  
+        element.innerHTML = width * 1  + '%'; 
+      } 
+    } 
+  } 
+
 function addcountwidget(){  
     var counter = document.getElementById("counter")
     if (counter == null)
     {
+        // doesn't load
+        //loadjscssfile("progressbar.css", "css") ////dynamically load and add this .css file        
+
         var p_ele2=createElement('<div align="center" id="counter" style="z-index:2000;position: fixed;top:5em;right:1em;border-radius:20px 20px 20px 20px;background: #b500ed;width: 120px;height: 150px;color:white;" class="rounded"><table><tr><td align="center"><br/>Unfollowed</td></tr><tr><td><br/></td></tr><tr><td align="center"><span style="color:white;font-size: 35px;font-weight: bold;"id="igcnt">0</span></td></tr><tr/></table>' +
-        '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" style="margin-bottom:10px;margin-top:10px">' +
-        '<path fill-opacity="0" stroke-width="3" stroke="#bbb" d="M81.495,13.923c-11.368-5.261-26.234-0.311-31.489,11.032C44.74,13.612,29.879,8.657,18.511,13.923  C6.402,19.539,0.613,33.883,10.175,50.804c6.792,12.04,18.826,21.111,39.831,37.379c20.993-16.268,33.033-25.344,39.819-37.379  C99.387,33.883,93.598,19.539,81.495,13.923z"/>' +
-        '<path id="heart-path" fill-opacity="0" stroke-width="5" stroke="#ED6A5A" d="M81.495,13.923c-11.368-5.261-26.234-0.311-31.489,11.032C44.74,13.612,29.879,8.657,18.511,13.923  C6.402,19.539,0.613,33.883,10.175,50.804c6.792,12.04,18.826,21.111,39.831,37.379c20.993-16.268,33.033-25.344,39.819-37.379  C99.387,33.883,93.598,19.539,81.495,13.923z"/>' +
-        '</svg>' +
-        '</div>')
+        '<div id="Progress_Status" style="width: 50%; background-color: #ddd; ">' +
+        '<div id="myprogressBar" style="width: 1%; height: 35px; background-color: #4CAF50; text-align: center; line-height: 32px; color: black; "></div> ' +
+        '</div>' +
+        '</div>' +
+        // '<script>' +
+        //     'var element = document.getElementById("myprogressBar");' +
+        //     'var width = 1; ' +
+        //     'var identity = setInterval(scene, 10); ' +
+        //     'function scene() { ' +
+        //     '    if (width >= 100) { ' +
+        //     '    clearInterval(identity); ' +
+        //     '    } else { ' +
+        //     '    width++;  ' +
+        //     '    element.style.width = width + "%";  ' +
+        //     '    } ' +
+        //     '} ' +
+        // '</script> ' +
+        '');
+
+        // adds counter with heart below number
+        // var p_ele2=createElement('<div align="center" id="counter" style="z-index:2000;position: fixed;top:5em;right:1em;border-radius:20px 20px 20px 20px;background: #b500ed;width: 120px;height: 150px;color:white;" class="rounded"><table><tr><td align="center"><br/>Unfollowed</td></tr><tr><td><br/></td></tr><tr><td align="center"><span style="color:white;font-size: 35px;font-weight: bold;"id="igcnt">0</span></td></tr><tr/></table>' +
+        // '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" style="margin-bottom:10px;margin-top:10px">' +
+        // '<path fill-opacity="0" stroke-width="3" stroke="#bbb" d="M81.495,13.923c-11.368-5.261-26.234-0.311-31.489,11.032C44.74,13.612,29.879,8.657,18.511,13.923  C6.402,19.539,0.613,33.883,10.175,50.804c6.792,12.04,18.826,21.111,39.831,37.379c20.993-16.268,33.033-25.344,39.819-37.379  C99.387,33.883,93.598,19.539,81.495,13.923z"/>' +
+        // '<path id="heart-path" fill-opacity="0" stroke-width="5" stroke="#ED6A5A" d="M81.495,13.923c-11.368-5.261-26.234-0.311-31.489,11.032C44.74,13.612,29.879,8.657,18.511,13.923  C6.402,19.539,0.613,33.883,10.175,50.804c6.792,12.04,18.826,21.111,39.831,37.379c20.993-16.268,33.033-25.344,39.819-37.379  C99.387,33.883,93.598,19.539,81.495,13.923z"/>' +
+        // '</svg>' +
+        // '</div>');
         document.getElementsByTagName("body")[0].appendChild(p_ele2)
+
+        updateProgress();
+        
+        // progressbar.js@1.0.0 version is used
+        // Docs: http://progressbarjs.readthedocs.org/en/1.0.0/
+
+        // var bar = new ProgressBar.Path('#heart-path', {
+        //     easing: 'easeInOut',
+        //     duration: 1400
+        // });
+        
+        // bar.set(0);
+        // bar.animate(1.0);  // Number from 0.0 to 1.0
+
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+function progressUpdate() {
+
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 /* function addadwidget(txt,img,lnk){ 
 try{
