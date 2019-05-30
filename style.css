@@ -24,8 +24,8 @@ body {
     font-size:12px;
     color: white;
     position: absolute;
-    bottom: 15px;
-    left: 15px;
+    bottom: 18px;
+    left: 20px;
 }
 #left {
     margin:0px;
@@ -37,7 +37,7 @@ body {
     display:flex;
     flex-direction:column;
     justify-content: space-between;
-    margin:0px 20px 20px 20px;
+    margin:0px 20px 0px 20px;
     height:260px;
     width:260px;
 }
@@ -50,7 +50,7 @@ body {
 .extitle {
     font-size:36px;
     font-weight:200;
-    margin:-5px 0px 0px 0px;
+    margin:-14px 0px 0px 0px;
 }
 .exsubtitle {
     font-size:24px;
