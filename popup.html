@@ -1,33 +1,13 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
   <html>
     <head>
+        <title>FreeBot Unfollow</title>
         <meta name="propeller" content="37ff94fc76cb760fe58f16c3744286bd">
-        <style>
-            button {
-                height: 30px;
-                width: 130px;
-                outline: none;
-                border: none;
-                color: white;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 16px;
-                margin: 4px 2px;
-                border-radius: 15px;
-                cursor: pointer;
-            }
-            .startButton { background-color: forestgreen; }
-            .stopButton { background-color: tomato; }
-        </style>
+        <link rel="stylesheet" href="assets/style.css" />
     </head>
-    <body style="width:400px">
+    <body id="container" style="width:550px;height:300px;">
         <div>
-            <h1>InstaUnfollow</h1>
-            <h2>Free, unlimited, auto-unfollower for Instagram</h2>
-            <!-- <h3>Private - we don't store any data, we don't even have servers or a cloud. Everything runs in your browser, to keep you safe and secure</h3>
-            <h4>Powered by Ads</h4>
-            <h4>Recommended to run in separate window</h4> -->
+            <h1>FreeBot Unfollow</h1>
             <h3 id="lifetime_count">Lifetime Unfollows: </h3>
         </div>
         <div>
@@ -37,8 +17,49 @@
         <button id="startButton" class="button startButton" cursor>Start</button>
         <button id="stopButton" class="button stopButton">Pause</button>
         <div>
-            <h2>Starts in new window</h2>
+            <h3>Starts in new window</h3>
         </div>
-    </body>
+    </body> 
     <script src="popup.js"></script>
-    </html>
+    </html> -->
+
+<!doctype html>
+<html>
+  <head>
+    <title>Presearch Search Extension</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="bulma.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+
+  <body>
+    <div id="excontainer">
+      <div id="left">
+        <img src="freebot-unfollow-logo.300px.png"></image>
+        <div id="lifetime_count" class="exbottom-left">Lifetime Unfollows: ...</div>
+      </div>
+      <div id="right">
+            <div class="extitle">FreeBot Unfollow</div>
+            <div>
+                <div>
+                    <div class="control has-icons-left">
+                        <input id="username" class="input field" type="text" placeholder="username">
+                        <span class="icon is-left">
+                            <i>@</i>
+                        </span>
+                    </div>
+                </div>            
+                <div class="columns is-mobile is-variable is-2">
+                    <div class="column">
+                        <button id="startButton" class="button is-primary" cursor>Start</button>
+                    </div>
+                    <div class="column">
+                        <button id="stopButton" class="button">Pause</button>
+                    </div>
+                </div>
+            </div>
+      </div>
+    </div>
+  </body>
+  <script src="popup.js"></script>
+</html>
