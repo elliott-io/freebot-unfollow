@@ -26,7 +26,7 @@ chrome.runtime.onInstalled.addListener(function() {
         chrome.tabs.remove(sender.tab.id, null);
         //sendResponse({message: sender.tab.id});
       }
-      else if (request.unfollow != "undefined") {
+      else if (str(request.unfollow) != "undefined") {
         var newURL = "https://www.instagram.com/" + request.unfollow + "/";
 
         chrome.tabs.create( { windowId: windowUnfollowId, url: newURL }, function(tab) {

@@ -11,13 +11,22 @@ username.onchange = function() {
 }
 
 window.onload = function(element) {
+    // for testing
+    // chrome.storage.sync.remove('username', function(result) {
+    // });
     chrome.storage.sync.get('username', function(result) {
-        // set username field from storage
-        username.value = result.username;
+        let saved_username = result.username;
+        if (typeof saved_username != "undefined") {
+            // set username field from storage
+            username.value = saved_username;
+        }
     });
     chrome.storage.sync.get('unfollows_lifetime', function(result) {
-        // show count with commas
-        lifetime_count.innerText = "Lifetime Unfollows: " + parseFloat(result.unfollows_lifetime).toLocaleString('en-US');
+        let saved_count = result.unfollows_lifetime;
+        if (typeof saved_count != "undefined") {
+            // show count with commas
+            lifetime_count.innerText = "Lifetime Unfollows: " + parseFloat(result.unfollows_lifetime).toLocaleString('en-US');
+        }
     });
     var circle = new ProgressBar.Circle('#progress', {
         color: '#FCB03C',
