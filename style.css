@@ -48,16 +48,17 @@ body {
     justify-content: flex-start;
 }
 .extitle {
-    font-size:36px;
+    font-size:37px;
     font-weight:200;
     margin:-14px 0px 0px 0px;
 }
 .exsubtitle {
-    font-size:24px;
+    font-size:28px;
     font-weight:200;
     margin:-10px 0px 0px 0px;
 }
 .extext {
     font-size:12px;
-    margin:3px 0px 0px 0px;
+    margin:13px 0px 0px 0px;
+    font-weight:200;
 }

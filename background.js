@@ -19,6 +19,8 @@ chrome.runtime.onInstalled.addListener(function() {
       console.log(sender.tab ?
                   "from a content script:" + sender.tab.url :
                   "from the extension");
+
+      let unfollow_username = request.unfollow;
       if (request.action == "start") {
         chrome.tabs.executeScript({file: "base.js"});
       }
@@ -26,8 +28,8 @@ chrome.runtime.onInstalled.addListener(function() {
         chrome.tabs.remove(sender.tab.id, null);
         //sendResponse({message: sender.tab.id});
       }
-      else if (str(request.unfollow) != "undefined") {
-        var newURL = "https://www.instagram.com/" + request.unfollow + "/";
+      else if (typeof unfollow_username != "undefined") {
+        var newURL = "https://www.instagram.com/" + unfollow_username + "/";
 
         chrome.tabs.create( { windowId: windowUnfollowId, url: newURL }, function(tab) {
           chrome.tabs.executeScript(tab.id, {file: "unfollow-user.js"});
