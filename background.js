@@ -1,4 +1,5 @@
 var windowUnfollowId = -1;
+var windowMainId = -1;
 
 chrome.runtime.onInstalled.addListener(function() {
     chrome.storage.sync.set({color: '#3aa757'}, function() {
