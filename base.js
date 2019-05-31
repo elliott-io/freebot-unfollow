@@ -86,7 +86,7 @@ function deletelist(button_link){
 function random_between()
 {
     //var rand=Math.floor(Math.random()*(interval2-interval+1)+interval)
-    var rand=Math.floor(Math.random()*(62000)+58000) // random interval between 58 and 62 seconds
+    var rand=Math.floor(Math.random() * 10000 + 12000) // 
     console.log(rand)
     return rand;
 }
