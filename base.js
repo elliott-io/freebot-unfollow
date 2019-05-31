@@ -31,10 +31,10 @@ function openFollowersWindow() {
         unfollow_users();
         //continueaction();
         }, 1000);
-}
-catch(e) {
-    alert("Could not find the 'Following' button. Please make sure you are logged into Instagram in Chrome and on your profile page (instagram.com/yourUserName). Or Refresh this page to remove any ads or extension elements.");
-}
+    }
+    catch(e) {
+        alert("Please make sure you are logged into Instagram in Chrome and entered the correct username into FreeBot Unfollow.");
+    }
 }
 
 function getFollowersElement() {

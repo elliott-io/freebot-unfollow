@@ -41,15 +41,23 @@ function unfollow() {
     chrome.tabs.executeScript(null, {
         file: 'base.js'
     }, function(ob) {
-        startButton.textContent = "Running..."
+        //startButton.textContent = "Running..."
     });
 }
 
 startButton.onclick = function(element) {
+
+    if (username.value == "") {
+        alert("Please add a username to start.")
+        return;
+    }
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         if (tabs[0].url != "https://www.instagram.com/" + username.value + "/" &&
         tabs[0].url != "https://www.instagram.com/" + username.value + "/following/" )
         {
+            // let background = chrome.extension.getBackgroundPage();
+            // background.windowMainId = chrome.window.currentWindow.id;
+
             chrome.windows.create({
                 url: "https://www.instagram.com/" + username.value + "/",
                 type: "normal"
