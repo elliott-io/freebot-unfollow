@@ -121,19 +121,22 @@ function unfollow_users(){
             console.log(screenname)
             console.log(doesinclude(screenname))
 
-            chrome.runtime.sendMessage({unfollow: screenname}, function(response) {
-                //console.log(response.farewell);
-            });
+            // unfollow user in separate tab
+            // chrome.runtime.sendMessage({unfollow: screenname}, function(response) {
+            //     //console.log(response.farewell);
+            // });
 
             if((computed_style=='rgb(38, 38, 38)') && !(doesinclude(screenname)))
             {
-//                console.log('Button clicked')
-//                button.click();
+               console.log('Button clicked')
+               button.click();
 				deletelist(buttonlinks[i]);
 				setTimeout(function(){ try{
 					var unfollow_button_arr=document.querySelectorAll('div[role="presentation"] button');
-					//unfollow_button_arr[unfollow_button_arr.length-2].click();
-					////document.querySelectorAll('div[role="presentation"] button')[1].click();
+                    unfollow_button_arr[unfollow_button_arr.length-2].click();
+                    
+                    //close following users window
+					//document.querySelectorAll('div[role="presentation"] button')[1].click();
 
                     igunfollowcount=igunfollowcount+1;
                     document.getElementById("igcnt").textContent=igunfollowcount;
@@ -148,7 +151,7 @@ function unfollow_users(){
                         lifetime_count += 1;
                         // for test // alert(lifetime_count);
                         chrome.storage.sync.set({unfollows_lifetime: lifetime_count}, function() {
-                            // saved unfollows_lifetime to storage
+                        // saved unfollows_lifetime to storage
                         });
                     });
                 } catch(e){} }, 1000);
