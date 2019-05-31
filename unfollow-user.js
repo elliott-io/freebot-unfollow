@@ -26,8 +26,14 @@
 //let jspath_followingStatusButton = '#react-root > section > main > div > header > section > div.nZSzR > div.Igw0E.IwRSH.eGOV_._4EzTm > span > span.vBF20._1OSdk > button';
 //let jspath_unfollowButton = 'body > div.RnEpo.Yx5HN > div > div > div.mt3GC > button.aOOlW.-Cab_';
 
+
+// most profiles have this js_path
 let jspath_followingStatusButton_option_1 = '#react-root > section > main > div > header > section > div.nZSzR > div.Igw0E.IwRSH.eGOV_._4EzTm > span > span.vBF20._1OSdk > button';
+// this profile has an alternate "Following" button js_path: https://www.instagram.com/vheinrich75/
 let jspath_followingStatusButton_option_2 = '#react-root > section > main > div > header > section > div.nZSzR > button';
+// difference in profiles can be noticed with no down arrow button next to their "Following" button
+
+
 //let jspath_followingStatusButton_option_1 = '#react-root > section > main > div > header > section > div > div > span > span > button';
 //let jspath_followingStatusButton_option_2 = '#react-root > section > main > div > header > section > div > button';
                                          // #react-root > section > main > div > header > section > div.Y2E37 > div > span > span.vBF20._1OSdk > button
