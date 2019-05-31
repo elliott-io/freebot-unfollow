@@ -15,8 +15,28 @@
     }
 //}
 
-let jspath_followingStatusButton = '#react-root > section > main > div > header > section > div.nZSzR > div.Igw0E.IwRSH.eGOV_._4EzTm > span > span.vBF20._1OSdk > button';
+// #react-root > section > main > div > header > section > div.Y2E37 > div > span > span.vBF20._1OSdk > button
+// //
+
+  //          document.querySelector("#react-root > section > main > div > header > section > div > div > span > span > button")
+  //          document.querySelector("#react-root > section > main > div > header > section > div > button")
+  //          document.querySelector("#react-root > section > main > div > header > section > div.Y2E37 > div > span > span.vBF20._1OSdk > button")
+  //          document.querySelector("#react-root > section > main > div > header > section > div.Y2E37 > button")
+  //          document.querySelector("#react-root > section > main > div > header > section > div.Y2E37 > button")
+//let jspath_followingStatusButton = '#react-root > section > main > div > header > section > div.nZSzR > div.Igw0E.IwRSH.eGOV_._4EzTm > span > span.vBF20._1OSdk > button';
+//let jspath_unfollowButton = 'body > div.RnEpo.Yx5HN > div > div > div.mt3GC > button.aOOlW.-Cab_';
+
+let jspath_followingStatusButton_option_1 = '#react-root > section > main > div > header > section > div.nZSzR > div.Igw0E.IwRSH.eGOV_._4EzTm > span > span.vBF20._1OSdk > button';
+let jspath_followingStatusButton_option_2 = '#react-root > section > main > div > header > section > div.nZSzR > button';
+//let jspath_followingStatusButton_option_1 = '#react-root > section > main > div > header > section > div > div > span > span > button';
+//let jspath_followingStatusButton_option_2 = '#react-root > section > main > div > header > section > div > button';
+                                         // #react-root > section > main > div > header > section > div.Y2E37 > div > span > span.vBF20._1OSdk > button
+// let xpath_followingStatusButton_option_1 = '//*[@id="react-root"]/section/main/div/header/section/div[2]/div/span/span[1]/button';
+// let xpath_followingStatusButton_option_2 = '//*[@id="react-root"]/section/main/div/header/section/div[2]/button';
+
+//let xpath_unfollowButton = '/html/body/div[3]/div/div/div[3]/button[1]';
 let jspath_unfollowButton = 'body > div.RnEpo.Yx5HN > div > div > div.mt3GC > button.aOOlW.-Cab_';
+//let jspath_unfollowButton = 'body > div > div > div > div > button';
 
 async function unfollowUser() {
     try {
@@ -25,13 +45,15 @@ async function unfollowUser() {
                 try 
                 {
 
-                    checkElement(jspath_followingStatusButton, "Following") 
+                    checkElement([jspath_followingStatusButton_option_1, jspath_followingStatusButton_option_2], "Following") 
                         .then((followingElement) => {
                             followingElement.click();
-                            checkElement(jspath_unfollowButton) 
+                            index = 0;
+                            checkElement([jspath_unfollowButton]) 
                             .then((unfollowButton) => {
                                 unfollowButton.click();
-                                checkElement(jspath_followingStatusButton, "Follow") 
+                                index = 0;
+                                checkElement([jspath_followingStatusButton_option_1, jspath_followingStatusButton_option_2], "Follow") 
                                 .then((followElement) => {
                                     closeTab();
                                 });
@@ -51,18 +73,45 @@ async function unfollowUser() {
         //closeTab();
     }
 }
-
+  
 function rafAsync() {
     return new Promise(resolve => {
         requestAnimationFrame(resolve); //faster than set time out
     });
 }
 
+var index = 0;
 function checkElement(selector, textContent = "") {
-    var el = document.querySelector(selector);
-    if (el === null || (textContent != "" && el.innerHTML != textContent)) {
-        return rafAsync().then(() => checkElement(selector));
-    } else {
+    
+    //alert(textContent + " || " + index + " || " + selector[index]);
+
+    var el = document.querySelector(selector[index]);
+    //var el = document.querySelector(selector);
+    //var el = document.evaluate(selector, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    //var el = document.evaluate(selector[index], document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    //alert(el);
+    // if (el != null){
+    //     alert("el.innerHTML: " + el.innerHTML);
+    // }
+    if (el === null || (textContent != "" && el.innerHTML != textContent))
+    {
+        // try different path
+        if (selector.length > index + 1) {
+            index += 1;
+            //alert(index + " || " + selector[index]);
+            return rafAsync().then(() => checkElement(selector, textContent));
+        } else {
+            index = 0;
+            //alert(index + " || " + selector[index]);
+            return rafAsync().then(() => checkElement(selector, textContent));
+        }
+    }
+    // else if (textContent != "" && el.innerHTML != textContent) {
+    //     alert(index + "wrong innerHTML: " + el.innerHTML);
+    //     return rafAsync().then(() => checkElement(selector[index], textContent));
+    // } 
+    else {
+//        alert(el.innerHTML);
         return Promise.resolve(el);
     }
 }
