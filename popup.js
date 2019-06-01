@@ -1,5 +1,5 @@
 let startButton = document.getElementById('startButton');
-let stopButton = document.getElementById('stopButton');
+//let stopButton = document.getElementById('stopButton');
 let username = document.getElementById('username');
 let lifetime_count = document.getElementById('lifetime_count')
 let unfollow_limit_daily = 1900; // exceeding 2000 may result in a ban from Instagram
@@ -29,13 +29,26 @@ window.onload = function(element) {
             lifetime_count.innerText = "Lifetime Unfollows: " + parseFloat(result.unfollows_lifetime).toLocaleString('en-US');
         }
     });
-    var circle = new ProgressBar.Circle('#progress', {
-        color: '#FCB03C',
-        duration: 3000,
-        easing: 'easeInOut'
-    });
+    // var circle = new ProgressBar.Circle('#progress', {
+    //     color: '#FCB03C',
+    //     duration: 3000,
+    //     easing: 'easeInOut'
+    // });
 
-    circle.animate(1);
+    // circle.animate(1);
+
+        // find status
+        chrome.storage.sync.get('status', function(result) {
+            var status = result.status;            
+            if (status == "running" || status == "started") {
+                startButton.textContent = "Pause";
+                startButton.className = "button";
+            }
+            else {
+                startButton.className = "button is-success";
+                startButton.textContent = "Start";
+            }
+        });
 }
 function unfollow() {
     // run unfollow script
@@ -98,78 +111,120 @@ startButton.onclick = function(element) {
 }
 
 function start() {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        if (tabs[0].url != "https://www.instagram.com/" + username.value + "/" &&
-        tabs[0].url != "https://www.instagram.com/" + username.value + "/following/" )
-        {
-            // let background = chrome.extension.getBackgroundPage();
-            // background.windowMainId = chrome.window.currentWindow.id;
 
-            chrome.windows.create({
-                url: "https://www.instagram.com/" + username.value + "/",
-                type: "normal"
-              }, function(win) {
-                let background =  chrome.extension.getBackgroundPage();
-                background.windowUnfollowId = win.id;
-                // win represents the Window object from windows API
-                // Do something after opening
-                // win.executeScript(null, {
-                //     file: 'base.js'
-                // }, function(ob) {
-                //     startButton.textContent = "Running..."
-                // });
+    if (startButton.textContent == "Start") {
+        chrome.storage.sync.set({status: "started"}, function() {
+            // saved to storage
+        });
+        startButton.textContent = "Pause";
+        startButton.className = "button";
 
-                // add listener so callback executes only if window loaded. otherwise calls instantly
-                // var listener = function(winId, changeInfo, tab) {
-            
-                //     alert(changeInfo.status);
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            if (tabs[0].url != "https://www.instagram.com/" + username.value + "/" &&
+            tabs[0].url != "https://www.instagram.com/" + username.value + "/following/" )
+            {
+                // let background = chrome.extension.getBackgroundPage();
+                // background.windowMainId = chrome.window.currentWindow.id;
 
-                //     if (winId == win.id && changeInfo.status === 'complete') {
-                //         // remove listener, so only run once
-                //         chrome.windows.onUpdated.removeListener(listener);
+                chrome.windows.create({
+                    url: "https://www.instagram.com/" + username.value + "/",
+                    type: "normal"
+                }, function(win) {
+                    let background =  chrome.extension.getBackgroundPage();
+                    background.windowUnfollowId = win.id;
+                    background.tabUnfollowId = win.tabs[0].id;
+                    //alert("start called");
+                    // chrome.tabs.sendMessage({start: "start"}, function(response) {
+                    //     //alert("start message sent");
+                    // });
+                    // chrome.runtime.sendMessage({start: win.tabs[0].id}, function(response) {
+                    // });
 
-                        // run script in new window
+                    // // run script in new window
+                    chrome.tabs.executeScript(background.tabUnfollowId, {
+                        file: 'base.js'
+                    }, function(ob) {
+                        //startButton.textContent = "Running..."
+                        chrome.tabs.sendMessage(background.tabUnfollowId, {action: "start"}, function(response) {
+                            alert(response.farewell);
+                          });    
+                    });
+                
+                    // win represents the Window object from windows API
+                    // Do something after opening
+                    // win.executeScript(null, {
+                    //     file: 'base.js'
+                    // }, function(ob) {
+                    //     startButton.textContent = "Running..."
+                    // });
 
-                        chrome.runtime.sendMessage({start: win.tabs[0].id}, function(response) {
-                        });
-                            
-                        // win.tabs[0].executeScript(null, {
-                        //     file: 'base.js'
-                        // }, function(ob) {
-                        //     startButton.textContent = "Running..."
-                        // });
+                    // add listener so callback executes only if window loaded. otherwise calls instantly
+                    // var listener = function(winId, changeInfo, tab) {
+                
+                    //     alert(changeInfo.status);
 
+                    //     if (winId == win.id && changeInfo.status === 'complete') {
+                    //         // remove listener, so only run once
+                    //         chrome.windows.onUpdated.removeListener(listener);
+
+                            // // run script in new window
+                            // //alert("tab in new window: " + win.tabs[0].id);
+                            // chrome.runtime.sendMessage({start: win.tabs[0].id}, function(response) {
+                            // });
+                                
+                            // win.tabs[0].executeScript(null, {
+                            //     file: 'base.js'
+                            // }, function(ob) {
+                            //     startButton.textContent = "Running..."
+                            // });
+
+                    //     }
+                    // }
+                    // chrome.windows.onUpdated.addListener(listener);
+                });
+                // chrome.tabs.update(tabs[0].id, {url: "https://www.instagram.com/" + username.value + "/", active: true}, function(tab1) {
+
+                //     // add listener so callback executes only if page loaded. otherwise calls instantly
+                //     var listener = function(tabId, changeInfo, tab) {
+                
+                //         if (tabId == tab1.id && changeInfo.status === 'complete') {
+                //             // remove listener, so only run once
+                //             chrome.tabs.onUpdated.removeListener(listener);
+                //             // enable buttons
+                //             //enableStartButton();
+                //             unfollow();
+                //         }
                 //     }
-                // }
-                // chrome.windows.onUpdated.addListener(listener);
-            });
-            // chrome.tabs.update(tabs[0].id, {url: "https://www.instagram.com/" + username.value + "/", active: true}, function(tab1) {
+                //     chrome.tabs.onUpdated.addListener(listener);
+                // });
+            }
+            else 
+            {
+                unfollow();
+            }
+        });
+    }
+    else if (startButton.textContent == "Pause") {
+        startButton.className = "button is-success";
+        startButton.textContent = "Start";
 
-            //     // add listener so callback executes only if page loaded. otherwise calls instantly
-            //     var listener = function(tabId, changeInfo, tab) {
-            
-            //         if (tabId == tab1.id && changeInfo.status === 'complete') {
-            //             // remove listener, so only run once
-            //             chrome.tabs.onUpdated.removeListener(listener);
-            //             // enable buttons
-            //             //enableStartButton();
-            //             unfollow();
-            //         }
-            //     }
-            //     chrome.tabs.onUpdated.addListener(listener);
-            // });
-        }
-        else 
-        {
-            unfollow();
-        }
-    });
+        let background = chrome.extension.getBackgroundPage();
+        chrome.tabs.sendMessage(background.tabUnfollowId, {action: "pause"}, function(response) {
+            //alert(response.farewell);
+          });    
+
+        // clearInterval(background.currentIdentity);         
+
+        chrome.storage.sync.set({status: "paused"}, function() {
+            // saved to storage
+        });
+    }
 }
 
-stopButton.onclick = function(element) {
-    // chrome.tabs.executeScript(null, {
-    //     file: 'stop.js'
-    // }, function(ob) {
-    //     startButton.textContent = "Resume"
-    // });
-}
+// stopButton.onclick = function(element) {
+//     // chrome.tabs.executeScript(null, {
+//     //     file: 'stop.js'
+//     // }, function(ob) {
+//     //     startButton.textContent = "Resume"
+//     // });
+// }

@@ -1,6 +1,18 @@
 var started = false;
 var unfollow_limit_today = 1900;
 
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+      console.log(sender.tab ?
+                  "from a content script:" + sender.tab.url :
+                  "from the extension");
+    //alert("message received");
+      if (request.action == "pause")
+//        unfollow_start();
+        stop("paused");
+//        sendResponse({farewell: "goodbye"});
+    });
+
 // chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 //     // Handle message.
 //     // In this example, message === 'whatever value; String, object, whatever'
@@ -10,8 +22,12 @@ var unfollow_limit_today = 1900;
 //         alert(unfollow_limit_today);
 //     }
 // });
-// function unfollow_start() {
+//function unfollow_start() {
     // Avoid recursive frame insertion...
+    chrome.storage.sync.set({status: "running"}, function() {
+        // saved to storage
+      });
+    
     var extensionOrigin = 'chrome-extension://' + chrome.runtime.id;
     if (!location.ancestorOrigins.contains(extensionOrigin)) {
         var iframe = document.createElement('iframe');
@@ -181,7 +197,7 @@ function unfollow_users(){
                         // check if unfollows for today reaches the max limit from Instagram
                         if (daily_count >= unfollow_limit_today) {
                             alert("FreeBot has unfollowed " + daily_count + " users for you today.\n\nYou're too close to Instagram's daily unfollow limits for FreeBot to keep going without risking your account being banned.\n\nPlease try again tomorrow.");
-                            stop();
+                            stop("daily limit reached");
                         }
                     });
                 } catch(e){} }, 1000);
@@ -265,6 +281,8 @@ function updateProgress(timeout) {
     var timeout_remaining = timeout
     let updateInterval = 100;
     identity = setInterval(scene, updateInterval); 
+    // let background = chrome.runtime.getBackgroundPage();
+    // background.currentIdentity = identity;
     function scene() { 
       if (width <= 0) { 
         clearInterval(identity); 
@@ -458,8 +476,12 @@ function addaadswidget(){
    document.getElementsByTagName("body")[0].appendChild(p_ele3)
 }
 
-function stop() {
+function stop(reason) {
     clearInterval(identity); 
+
+    chrome.storage.sync.set({status: reason}, function() {
+        // saved to storage
+      });
 
     throw new Error();
 }
