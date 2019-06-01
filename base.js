@@ -1,7 +1,16 @@
 var started = false;
+var unfollow_limit_today = 1900;
 
-//function unfollow_start() {
-
+// chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+//     // Handle message.
+//     // In this example, message === 'whatever value; String, object, whatever'
+//     alert(message);
+//     if (message.limit != "") {
+//         unfollow_limit_today = message.limit;
+//         alert(unfollow_limit_today);
+//     }
+// });
+// function unfollow_start() {
     // Avoid recursive frame insertion...
     var extensionOrigin = 'chrome-extension://' + chrome.runtime.id;
     if (!location.ancestorOrigins.contains(extensionOrigin)) {
@@ -141,6 +150,7 @@ function unfollow_users(){
                     igunfollowcount=igunfollowcount+1;
                     document.getElementById("igcnt").textContent=igunfollowcount;
 
+                    // update lifetime unfollows count
                     chrome.storage.sync.get('unfollows_lifetime', function(result) {
                         // set username field from storage
                         var lifetime_count = parseInt(result.unfollows_lifetime);
@@ -149,10 +159,30 @@ function unfollow_users(){
                             lifetime_count = 0;
                         }
                         lifetime_count += 1;
-                        // for test // alert(lifetime_count);
+
                         chrome.storage.sync.set({unfollows_lifetime: lifetime_count}, function() {
-                        // saved unfollows_lifetime to storage
+                            // saved to storage
                         });
+                    });
+
+                    // update daily date 
+                    let today = new Date().toLocaleDateString();
+                    chrome.storage.sync.set({unfollows_daily_date: today}, function() {
+                        // saved to storage
+                    });
+
+                    // update daily count 
+                    chrome.storage.sync.get('unfollows_daily_count', function(result) {
+                        let daily_count = parseInt(result.unfollows_daily_count);
+                        daily_count += 1;
+                        chrome.storage.sync.set({unfollows_daily_count: daily_count}, function() {
+                            // saved to storage
+                        });
+                        // check if unfollows for today reaches the max limit from Instagram
+                        if (daily_count >= unfollow_limit_today) {
+                            alert("FreeBot has unfollowed " + daily_count + " users for you today.\n\nYou're too close to Instagram's daily unfollow limits for FreeBot to keep going without risking your account being banned.\n\nPlease try again tomorrow.");
+                            stop();
+                        }
                     });
                 } catch(e){} }, 1000);
             }
@@ -226,6 +256,7 @@ function loadjscssfile(filename, filetype){
         document.getElementsByTagName("head")[0].appendChild(fileref)
 }
 
+var identity;
 function updateProgress(timeout) { 
     var element = document.getElementById("myprogressBar");    
     var width = 100.0; 
@@ -233,7 +264,7 @@ function updateProgress(timeout) {
     //alert(timeout)
     var timeout_remaining = timeout
     let updateInterval = 100;
-    var identity = setInterval(scene, updateInterval); 
+    identity = setInterval(scene, updateInterval); 
     function scene() { 
       if (width <= 0) { 
         clearInterval(identity); 
@@ -428,6 +459,8 @@ function addaadswidget(){
 }
 
 function stop() {
+    clearInterval(identity); 
+
     throw new Error();
 }
 

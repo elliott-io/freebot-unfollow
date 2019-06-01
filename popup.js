@@ -2,6 +2,7 @@ let startButton = document.getElementById('startButton');
 let stopButton = document.getElementById('stopButton');
 let username = document.getElementById('username');
 let lifetime_count = document.getElementById('lifetime_count')
+let unfollow_limit_daily = 1900; // exceeding 2000 may result in a ban from Instagram
 
 username.onchange = function() {
     chrome.storage.sync.set({username: username.value}, function() {
@@ -51,6 +52,52 @@ startButton.onclick = function(element) {
         alert("Please add a username to start.")
         return;
     }
+
+    // check daily limit to prevent user getting banned by Instagram for too manu unfollows
+    chrome.storage.sync.get('unfollows_daily_date', function(result) {
+        let daily_date = result.unfollows_daily_date;
+        let today = new Date().toLocaleDateString();
+        if (typeof daily_date != "undefined") {
+            if (daily_date == today) {
+                // there have been unfollows today
+                //alert("boo");
+                chrome.storage.sync.get('unfollows_daily_count', function(result) {
+                    let daily_count = parseInt(result.unfollows_daily_count);
+                    // check if unfollows for today reaches the max limit from Instagram
+                    if (daily_count >= unfollow_limit_daily) {
+                        alert("FreeBot has unfollowed " + daily_count + " users for you today.\n\nYou're too close to Instagram's daily unfollow limits for FreeBot to keep going without risking your account being banned.\n\nPlease try again tomorrow.");
+                        return;
+                    } else {
+                        start();
+                    }
+                });
+            }
+            else {
+                // no unfollows today
+                //alert("yay");
+                chrome.storage.sync.set({unfollows_daily_date: today}, function() {
+                    // saved to storage
+                });
+                chrome.storage.sync.set({unfollows_daily_count: 0}, function() {
+                    // saved to storage
+                });
+                start();
+            }
+        } else {
+            // no unfollows today
+            //alert("yay");
+            chrome.storage.sync.set({unfollows_daily_date: today}, function() {
+                // saved to storage
+            });
+            chrome.storage.sync.set({unfollows_daily_count: 0}, function() {
+                // saved to storage
+            });
+            start();
+        }
+    });
+}
+
+function start() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         if (tabs[0].url != "https://www.instagram.com/" + username.value + "/" &&
         tabs[0].url != "https://www.instagram.com/" + username.value + "/following/" )
@@ -83,7 +130,7 @@ startButton.onclick = function(element) {
 
                         // run script in new window
 
-                        chrome.runtime.sendMessage({action: "start"}, function(response) {
+                        chrome.runtime.sendMessage({start: win.tabs[0].id}, function(response) {
                         });
                             
                         // win.tabs[0].executeScript(null, {
@@ -120,9 +167,9 @@ startButton.onclick = function(element) {
 }
 
 stopButton.onclick = function(element) {
-    chrome.tabs.executeScript(null, {
-        file: 'stop.js'
-    }, function(ob) {
-        startButton.textContent = "Resume"
-    });
+    // chrome.tabs.executeScript(null, {
+    //     file: 'stop.js'
+    // }, function(ob) {
+    //     startButton.textContent = "Resume"
+    // });
 }

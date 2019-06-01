@@ -22,8 +22,12 @@ chrome.runtime.onInstalled.addListener(function() {
                   "from the extension");
 
       let unfollow_username = request.unfollow;
-      if (request.action == "start") {
-        chrome.tabs.executeScript({file: "base.js"});
+      if (typeof request.start != "undefined") {
+        let tabId = request.start;
+        chrome.tabs.executeScript(tabId, {file: "base.js"});
+        // chrome.runtime.sendMessage(tabId, {limit: unfollow_limit_daily}, function(response) {
+        //   alert("limit sent rto tabId: " + tabId);
+        // });
       }
       else if (request.action == "close_tab") {
         chrome.tabs.remove(sender.tab.id, null);
