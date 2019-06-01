@@ -111,8 +111,9 @@ startButton.onclick = function(element) {
 }
 function checkExisting() {
     let background =  chrome.extension.getBackgroundPage();
+    //alert(background.tabUnfollowId);
     chrome.tabs.get(background.tabUnfollowId, function(tab) {
-        //alert(tab);
+    //    alert(tab);
         if (typeof tab != "undefined") {
             if (startButton.textContent == "Start") {
                 resume();

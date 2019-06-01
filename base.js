@@ -12,7 +12,8 @@ chrome.runtime.onMessage.addListener(
         sendResponse({action: "paused"});
     }
       else if (request.action == "resume") {
-        unfollow_users();
+        //unfollow_users();
+        unfollow_start();
         sendResponse({action: "resumed"});
       }
     });
@@ -45,6 +46,25 @@ chrome.runtime.onMessage.addListener(
         //iframe.contentWindow.onload = openFollowersWindow();
     }
 //}
+function unfollow_start() {
+    // Avoid recursive frame insertion...
+    chrome.storage.sync.set({status: "running"}, function() {
+        // saved to storage
+      });
+    
+    var extensionOrigin = 'chrome-extension://' + chrome.runtime.id;
+    if (!location.ancestorOrigins.contains(extensionOrigin)) {
+        var iframe = document.createElement('iframe');
+        // Must be declared at web_accessible_resources in manifest.json
+        iframe.src = chrome.runtime.getURL('frame.html');
+        iframe.onload = openFollowersWindow();
+        // Some styles for a fancy sidebar
+        iframe.style.cssText = 'position:fixed;top:0;left:0;display:block;' +
+                            'width:140px; height:260px; z-index:1000;';
+        document.body.appendChild(iframe);
+        //iframe.contentWindow.onload = openFollowersWindow();
+    }
+}
 
 function openFollowersWindow() {
     try {

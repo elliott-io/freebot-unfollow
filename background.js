@@ -5,6 +5,7 @@ var windowMainId = -1;
 chrome.runtime.onSuspend.addListener(function() {
   //alert("suspended");
   // Do some simple clean-up tasks.
+  tabUnfollowId = 0;
   chrome.storage.sync.set({status: "received chrome.runtime.onSuspend"}, function() {
     // saved to storage
   });
