@@ -7,10 +7,14 @@ chrome.runtime.onMessage.addListener(
                   "from a content script:" + sender.tab.url :
                   "from the extension");
     //alert("message received");
-      if (request.action == "pause")
-//        unfollow_start();
+      if (request.action == "pause") {
         stop("paused");
-//        sendResponse({farewell: "goodbye"});
+        sendResponse({action: "paused"});
+    }
+      else if (request.action == "resume") {
+        unfollow_users();
+        sendResponse({action: "resumed"});
+      }
     });
 
 // chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
@@ -483,7 +487,7 @@ function stop(reason) {
         // saved to storage
       });
 
-    throw new Error();
+    //throw new Error();
 }
 
 //<iframe data-aa='1062397' src='//ad.a-ads.com/1062397?size=120x240&background_color=e00000&text_color=ffffff&title_color=ffffff&link_color=f93e64' scrolling='no' style='width:120px; height:240px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>

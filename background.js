@@ -1,5 +1,5 @@
 var windowUnfollowId = -1;
-var tabUnfollowId = -1;
+var tabUnfollowId = 0;
 var windowMainId = -1;
 
 chrome.runtime.onSuspend.addListener(function() {

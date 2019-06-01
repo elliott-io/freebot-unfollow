@@ -7,7 +7,7 @@
     "manifest_version": 2,
     "background": {
         "scripts": ["background.js"],
-        "persistent": true
+        "persistent": false
       },
       "content-scripts": [ {
         "matches": ["popup.html"],
