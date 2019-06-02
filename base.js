@@ -339,7 +339,7 @@ function addcountwidget(){
         // doesn't load
         //loadjscssfile("progressbar.css", "css") ////dynamically load and add this .css file        
 
-        var p_ele2=createElement('<div align="center" id="counter" style="z-index:2000;position: fixed;top:5em;right:1em;border-radius:20px 20px 20px 20px;background: #b500ed;width: 120px;height: 110px;color:white;" class="rounded"><table><tr><td align="center"><br/>Unfollowed</td></tr><tr><td><br/></td></tr><tr><td align="center"><span style="color:white;font-size: 35px;font-weight: bold;"id="igcnt">0</span></td></tr><tr/></table>' +
+        var p_ele2=createElement('<div align="center" id="counter" style="z-index:2000;position: fixed;top:5em;right:1em;border-radius:20px 20px 20px 20px;background: #b500ed;width: 120px;height: 110px;color:white;" class="rounded"><table><tr><td align="center"><br/>Unfollowed</td></tr><tr><td><br/></td></tr><tr><td align="center"><span style="color:white;font-size: 35px;font-weight:bold;"id="igcnt">0</span></td></tr><tr/></table>' +
         '<div id="Progress_Status" style="width: 80%; background-color: #ddd; border-radius:5px 5px 5px 5px; margin-top: 10px; margin-bottom:10px;">' +
         '<div id="myprogressBar"  style="width: 100%; height: 10px; border-radius:5px 5px 5px 5px; background-color: #4CAF50; text-align: center; line-height: 32px; color: black; "></div> ' +
         '</div>' +
