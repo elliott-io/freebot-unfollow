@@ -27,25 +27,21 @@ chrome.runtime.onMessage.addListener(
 //         alert(unfollow_limit_today);
 //     }
 // });
-//function unfollow_start() {
-    // Avoid recursive frame insertion...
-    chrome.storage.sync.set({status: "running"}, function() {
-        // saved to storage
-      });
-    
-    var extensionOrigin = 'chrome-extension://' + chrome.runtime.id;
-    if (!location.ancestorOrigins.contains(extensionOrigin)) {
-        var iframe = document.createElement('iframe');
-        // Must be declared at web_accessible_resources in manifest.json
-        iframe.src = chrome.runtime.getURL('frame.html');
-        iframe.onload = openFollowersWindow();
-        // Some styles for a fancy sidebar
-        iframe.style.cssText = 'position:fixed;top:0;left:0;display:block;' +
-                            'width:140px; height:260px; z-index:1000;';
-        document.body.appendChild(iframe);
-        //iframe.contentWindow.onload = openFollowersWindow();
-    }
-//}
+
+// // add google analytics
+// var _gaq = _gaq || [];
+// _gaq.push(['_setAccount', 'UA-141260128-1']);
+// //_gaq.push(['_trackPageview']);
+
+// (function() {
+//   var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+//   ga.src = 'https://ssl.google-analytics.com/ga.js';
+//   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+// })();
+
+// start 
+unfollow_start();
+
 function unfollow_start() {
     // Avoid recursive frame insertion...
     chrome.storage.sync.set({status: "running"}, function() {
@@ -187,6 +183,10 @@ function unfollow_users(){
                     //close following users window
 					//document.querySelectorAll('div[role="presentation"] button')[1].click();
 
+                    // google analytics: track unfollow count
+                    //_gaq.push(['_trackEvent', 'bot', 'unfollow']);
+                    chrome.runtime.sendMessage({analytics: "unfollow"}, function(response) {
+                    });            
                     igunfollowcount=igunfollowcount+1;
                     document.getElementById("igcnt").textContent=igunfollowcount;
 

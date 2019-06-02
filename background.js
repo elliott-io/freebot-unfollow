@@ -2,6 +2,17 @@ var windowUnfollowId = -1;
 var tabUnfollowId = 0;
 var windowMainId = -1;
 
+// add google analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-141260128-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = 'https://ssl.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
 chrome.runtime.onSuspend.addListener(function() {
   //alert("suspended");
   // Do some simple clean-up tasks.
@@ -11,12 +22,25 @@ chrome.runtime.onSuspend.addListener(function() {
   });
 });
 
-chrome.runtime.onRestarted.addListener(function() {
-  alert("restarted");
-  chrome.storage.sync.set({status: "restarted"}, function() {
-    // saved to storage
+// chrome.runtime.onRestarted.addListener(function() {
+// //  alert("restarted");
+//   chrome.storage.sync.set({status: "restarted"}, function() {
+//     // saved to storage
+//   });
+// });
+
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    console.log(sender.tab ?
+                "from a content script:" + sender.tab.url :
+                "from the extension");
+  //alert("message received");
+    if (request.analytics == "unfollow") {
+      //stop("paused");
+      //sendResponse({action: "paused"});
+      _gaq.push(['_trackEvent', 'bot', 'unfollow']);
+  }
   });
-});
 
 // chrome.runtime.onInstalled.addListener(function() {
 //     chrome.storage.sync.set({color: '#3aa757'}, function() {

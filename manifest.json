@@ -5,6 +5,7 @@
     "description": "Safe. Secure. Free. Unlimited. Automatic. Your personal mass unfollower bot for Instagram. ",
     "author": "elliott.io",
     "manifest_version": 2,
+    "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
     "background": {
         "scripts": ["background.js"],
         "persistent": false
@@ -22,6 +23,6 @@
         "default_popup": "popup.html"
     },
     "web_accessible_resources": [
-        "frame.html", "modal.html"
+        "frame.html", "modal.html", "background.html"
     ]
 }
