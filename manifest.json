@@ -10,9 +10,9 @@
         "scripts": ["background.js"],
         "persistent": false
       },
-      "content-scripts": [ {
-        "js": ["base.js"]
-      }],
+      // "content_scripts": [ {
+      //   "js": ["base.js"]
+      // }],
     "icons": {
         "16": "images/bot-Instagram-Glyph-Icon.rounded.16.png",
         "48": "images/bot-Instagram-Glyph-Icon.rounded.48.png",

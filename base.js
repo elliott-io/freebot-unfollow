@@ -305,8 +305,8 @@ function updateProgress(timeout) {
     var timeout_remaining = timeout
     let updateInterval = 100;
     identity = setInterval(scene, updateInterval); 
-    // let background = chrome.runtime.getBackgroundPage();
-    // background.currentIdentity = identity;
+    //let background = chrome.runtime.getBackgroundPage();
+    //background.currentIdentity = identity;
     function scene() { 
       if (width <= 0) { 
         clearInterval(identity); 

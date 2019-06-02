@@ -14,13 +14,22 @@ _gaq.push(['_trackPageview']);
 })();
 
 chrome.runtime.onSuspend.addListener(function() {
-  //alert("suspended");
+  alert("onSuspend");
   // Do some simple clean-up tasks.
   tabUnfollowId = 0;
   chrome.storage.sync.set({status: "received chrome.runtime.onSuspend"}, function() {
     // saved to storage
   });
 });
+
+// chrome.runtime.onSuspendCanceled.addListener(function() {
+//   alert("onSuspendCanceled");
+//   // Do some simple clean-up tasks.
+//   tabUnfollowId = 0;
+//   chrome.storage.sync.set({status: "received chrome.runtime.onSuspendCanceled"}, function() {
+//     // saved to storage
+//   });
+// });
 
 // chrome.runtime.onRestarted.addListener(function() {
 // //  alert("restarted");

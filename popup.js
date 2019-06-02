@@ -124,22 +124,26 @@ startButton.onclick = function(element) {
     });
 }
 function checkExisting() {
-    let background =  chrome.extension.getBackgroundPage();
-    //alert(background.tabUnfollowId);
-    chrome.tabs.get(background.tabUnfollowId, function(tab) {
-    //    alert(tab);
-        if (typeof tab != "undefined") {
-            if (startButton.textContent == "Start") {
-                resume();
-            } 
-            else if (startButton.textContent == "Pause") {
-                pause();
+    try {
+        let background =  chrome.extension.getBackgroundPage();
+        //alert(background.tabUnfollowId);
+        chrome.tabs.get(background.tabUnfollowId, function(tab) {
+        //    alert(tab);
+            if (typeof tab != "undefined") {
+                if (startButton.textContent == "Start") {
+                    resume();
+                } 
+                else if (startButton.textContent == "Pause") {
+                    pause();
+                }
             }
-        }
-        else {
-            start();
-        }
-    });
+            else {
+                start();
+            }
+        });
+    } catch(e) {
+        start();
+    }
 }
 function start() {
     chrome.storage.sync.set({status: "started"}, function() {
@@ -165,7 +169,7 @@ function start() {
                     file: 'base.js'
                 }, function(ob) {
                     chrome.tabs.sendMessage(background.tabUnfollowId, {action: "start"}, function(response) {
-                        alert(response.farewell);
+                        //alert(response.farewell);
                       });    
                 });
             });
