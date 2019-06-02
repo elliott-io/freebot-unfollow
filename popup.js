@@ -63,14 +63,15 @@ window.onload = function(element) {
 }
 function unfollow() {
 
-    _gaq.push(['_trackEvent', 'session', 'started']);
-
     // run unfollow script
     chrome.tabs.executeScript(null, {
         file: 'base.js'
     }, function(ob) {
         //startButton.textContent = "Running..."
     });
+    //_gaq.push(['_trackEvent', 'session', 'started']);
+    startButton.textContent = "Pause";
+    startButton.className = "button";
 }
 
 startButton.onclick = function(element) {
@@ -149,9 +150,6 @@ function start() {
     chrome.storage.sync.set({status: "started"}, function() {
         // saved to storage
     });
-    _gaq.push(['_trackEvent', 'session', 'started']);
-    startButton.textContent = "Pause";
-    startButton.className = "button";
 
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         if (tabs[0].url != "https://www.instagram.com/" + username.value + "/" &&
@@ -172,6 +170,9 @@ function start() {
                         //alert(response.farewell);
                       });    
                 });
+                //_gaq.push(['_trackEvent', 'session', 'started']);
+                startButton.textContent = "Pause";
+                startButton.className = "button";            
             });
         }
         else 

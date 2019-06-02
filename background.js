@@ -63,11 +63,19 @@ chrome.runtime.onMessage.addListener(
                 "from a content script:" + sender.tab.url :
                 "from the extension");
   //alert("message received");
-    if (request.analytics == "unfollow") {
+  let analytics_action = request.action;
+    if (analytics_action == "unfollow") {
       //stop("paused");
       //sendResponse({action: "paused"});
       _gaq.push(['_trackEvent', 'bot', 'unfollow']);
-  }
+    }
+    else if (analytics_action == "started" || analytics_action == "resumed") {
+      _gaq.push(['_trackEvent', 'session', analytics_action]);
+    }
+    else if (request.action == "close_tab") {
+      chrome.tabs.remove(sender.tab.id, null);
+    }
+
   });
 
 // chrome.runtime.onInstalled.addListener(function() {

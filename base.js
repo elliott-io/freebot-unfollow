@@ -13,7 +13,7 @@ chrome.runtime.onMessage.addListener(
     }
       else if (request.action == "resume") {
         //unfollow_users();
-        unfollow_start();
+        unfollow_start("resumed");
         sendResponse({action: "resumed"});
       }
     });
@@ -40,14 +40,16 @@ chrome.runtime.onMessage.addListener(
 // })();
 
 // start 
-unfollow_start();
+unfollow_start("started");
 
-function unfollow_start() {
+function unfollow_start(reason) {
     // Avoid recursive frame insertion...
     chrome.storage.sync.set({status: "running"}, function() {
         // saved to storage
-      });
-    
+    });
+    chrome.runtime.sendMessage({analytics: reason}, function(response) {
+    });            
+
     var extensionOrigin = 'chrome-extension://' + chrome.runtime.id;
     if (!location.ancestorOrigins.contains(extensionOrigin)) {
         var iframe = document.createElement('iframe');
@@ -78,7 +80,14 @@ function openFollowersWindow() {
         }, 1000);
     }
     catch(e) {
-        alert("Please make sure you are logged into Instagram in Chrome and entered the correct username into FreeBot Unfollow.");
+        chrome.storage.sync.set({status: "not logged in or wrong username"}, function() {
+            // saved to storage
+            alert("Please make sure you are logged into Instagram in Chrome and entered the correct username into FreeBot Unfollow.");
+//            let background =  chrome.extension.getBackgroundPage();
+//            alert(background.tabUnfollowId);
+            chrome.runtime.sendMessage({action: "close_tab"}, function(response) {
+            });
+        });
     }
 }
 
