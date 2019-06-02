@@ -14,7 +14,7 @@ _gaq.push(['_trackPageview']);
 })();
 
 chrome.runtime.onSuspend.addListener(function() {
-  alert("onSuspend");
+  //alert("onSuspend");
   // Do some simple clean-up tasks.
   tabUnfollowId = 0;
   chrome.storage.sync.set({status: "received chrome.runtime.onSuspend"}, function() {
