@@ -13,14 +13,33 @@ _gaq.push(['_trackPageview']);
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
 
-chrome.runtime.onSuspend.addListener(function() {
-  //alert("onSuspend");
-  // Do some simple clean-up tasks.
-  tabUnfollowId = 0;
-  chrome.storage.sync.set({status: "received chrome.runtime.onSuspend"}, function() {
-    // saved to storage
-  });
+chrome.tabs.onRemoved.addListener(function(tabId) { 
+  //alert("tab removed with id: " + tabId);
+  if (tabId == tabUnfollowId) {
+    tabUnfollowId = 0;
+    chrome.storage.sync.set({status: "received chrome.tabs.onRemoved"}, function() {
+      // saved to storage
+    });
+  }
 });
+
+chrome.windows.onRemoved.addListener(function(windowId) { 
+  //alert("window removed with id: " + windowId);
+  if (windowId == windowUnfollowId) {
+    tabUnfollowId = 0;
+    chrome.storage.sync.set({status: "received chrome.windows.onRemoved"}, function() {
+      // saved to storage
+    });
+  }
+});
+// chrome.runtime.onSuspend.addListener(function() {
+//   //alert("onSuspend");
+//   // Do some simple clean-up tasks.
+//   tabUnfollowId = 0;
+//   chrome.storage.sync.set({status: "received chrome.runtime.onSuspend"}, function() {
+//     // saved to storage
+//   });
+// });
 
 // chrome.runtime.onSuspendCanceled.addListener(function() {
 //   alert("onSuspendCanceled");
