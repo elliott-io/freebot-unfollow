@@ -63,7 +63,7 @@ chrome.runtime.onMessage.addListener(
                 "from a content script:" + sender.tab.url :
                 "from the extension");
   //alert("message received");
-  let analytics_action = request.action;
+  let analytics_action = request.analytics;
     if (analytics_action == "unfollow") {
       //stop("paused");
       //sendResponse({action: "paused"});
