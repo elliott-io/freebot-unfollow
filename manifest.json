@@ -9,10 +9,7 @@
     "background": {
         "scripts": ["background.js"],
         "persistent": true
-      },
-      // "content_scripts": [ {
-      //   "js": ["base.js"]
-      // }],
+    },
     "icons": {
         "16": "images/bot-Instagram-Glyph-Icon.rounded.16.png",
         "48": "images/bot-Instagram-Glyph-Icon.rounded.48.png",
