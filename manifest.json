@@ -1,24 +1,27 @@
 {
-    "name": "FreeBot Unfollow: Unlimited Auto-Unfollower for Instagram",
-    "version": "0.0.0.1", 
-    "description": "Free, unlimited, automatic unfollower bot for Instagram. Powered by ads. You must be logged in to instagram.com in Chrome.",
+    "name": "FreeBot Unfollow: Instagram Mass Unfollower",
+    "short_name": "FreeBot Unfollow",
+    "version": "0.0.0.9", 
+    "description": "Safe. Secure. Free. Unlimited. Automatic. Your personal mass unfollower bot for Instagram. ",
     "author": "elliott.io",
     "manifest_version": 2,
+    "content_security_policy": "script-src 'self' https://ssl.google-analytics.com https://partners.getresponse.com https://d31mxuhvwrofft.cloudfront.net https://rcm-na.amazon-adsystem.com https://p352609.clksite.com https://syndication.exdynsrv.com https://a.exdynsrv.com; object-src 'self'",
     "background": {
         "scripts": ["background.js"],
-        "persistent": false
-      },
+        "persistent": true
+    },
     "icons": {
-        "16": "images/get_started16.png",
-        "32": "images/get_started32.png",
-        "48": "images/get_started48.png",
-        "128": "images/get_started128.png"
+        "16": "images/bot-Instagram-Glyph-Icon.rounded.16.png",
+        "48": "images/bot-Instagram-Glyph-Icon.rounded.48.png",
+        "128": "images/bot-Instagram-Glyph-Icon.rounded.128.png"
       },
-    "permissions": ["activeTab", "declarativeContent", "storage", "<all_urls>"],
+    "permissions": ["activeTab", "declarativeContent", "storage", "https://www.instagram.com/*"],
     "browser_action": {
         "default_popup": "popup.html"
     },
     "web_accessible_resources": [
-        "frame.html", "modal.html"
+        "/ads/*",
+        "modal.html", 
+        "background.html"
     ]
 }

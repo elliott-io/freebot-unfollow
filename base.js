@@ -1,21 +1,102 @@
 var started = false;
+var unfollow_limit_today = 1900;
 
-//function unfollow_start() {
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+      console.log(sender.tab ?
+                  "from a content script:" + sender.tab.url :
+                  "from the extension");
+    //alert("message received");
+      if (request.action == "pause") {
+        stop("paused");
+        sendResponse({action: "paused"});
+    }
+      else if (request.action == "resume") {
+        //unfollow_users();
+        unfollow_start("resumed");
+        sendResponse({action: "resumed"});
+      }
+    });
 
+// chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+//     // Handle message.
+//     // In this example, message === 'whatever value; String, object, whatever'
+//     alert(message);
+//     if (message.limit != "") {
+//         unfollow_limit_today = message.limit;
+//         alert(unfollow_limit_today);
+//     }
+// });
+
+// // add google analytics
+// var _gaq = _gaq || [];
+// _gaq.push(['_setAccount', 'UA-141260128-1']);
+// //_gaq.push(['_trackPageview']);
+
+// (function() {
+//   var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+//   ga.src = 'https://ssl.google-analytics.com/ga.js';
+//   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+// })();
+
+// start 
+unfollow_start("started");
+
+function unfollow_start(reason) {
     // Avoid recursive frame insertion...
+    chrome.storage.sync.set({status: "running"}, function() {
+        // saved to storage
+    });
+    chrome.runtime.sendMessage({analytics: reason}, function(response) {
+    });            
+
     var extensionOrigin = 'chrome-extension://' + chrome.runtime.id;
     if (!location.ancestorOrigins.contains(extensionOrigin)) {
+
+        // add amazon banner frame 160x600
+        iframe_append('/ads/amazon-160x600.html',  
+        'position:fixed;top:100px;left:0px;display:block;' +
+        'width:160px; height:600px; z-index:1000;');
+
+        // add exoclick frame
+        iframe_append('/ads/exoclick.html', 
+        'position:fixed;top:0px;left:0px;display:block;' + 
+        'width:728px; height:90px; z-index:1000;');
+
+        // add aad frame
+        iframe_append('/ads/aads.html', 
+        'position:fixed;top:100px;left:170px;display:block;' + 
+        'width:140px; height:260px; z-index:1000;');
+
+        // add getresponse frame
+        iframe_append('/ads/getresponse.html',  
+        'position:fixed;top:360px;left:170px;display:block;' +
+        'width:300px; height:250px; z-index:1000;');
+
+        // add amazon banner frame 300x250
+        // iframe_append('/ads/amazon-300x250.html',  
+        // 'position:fixed;top:620px;left:170px;display:block;' +
+        // 'width:300px; height:250px; z-index:1000;');
+
+        // // add ad-maven frame
+        // iframe_append('/ads/admaven.html',  
+        // 'position:fixed;top:270px;left:0px;display:block;' +
+        // 'width:300px; height:250px; z-index:1000;');
+
+        // open follower window and start bot
+        openFollowersWindow();
+    }
+}
+
+function iframe_append(url, css) {
+        // add iframe
         var iframe = document.createElement('iframe');
         // Must be declared at web_accessible_resources in manifest.json
-        iframe.src = chrome.runtime.getURL('frame.html');
-        iframe.onload = openFollowersWindow();
-        // Some styles for a fancy sidebar
-        iframe.style.cssText = 'position:fixed;top:0;left:0;display:block;' +
-                            'width:140px; height:260px; z-index:1000;';
+        iframe.src = chrome.runtime.getURL(url);
+        // add css
+        iframe.style.cssText = css;
         document.body.appendChild(iframe);
-        //iframe.contentWindow.onload = openFollowersWindow();
-    }
-//}
+}
 
 function openFollowersWindow() {
     try {
@@ -31,10 +112,17 @@ function openFollowersWindow() {
         unfollow_users();
         //continueaction();
         }, 1000);
-}
-catch(e) {
-    alert("Could not find the 'Following' button. Please make sure you are logged into Instagram in Chrome and on your profile page (instagram.com/yourUserName). Or Refresh this page to remove any ads or extension elements.");
-}
+    }
+    catch(e) {
+        chrome.storage.sync.set({status: "not logged in or wrong username"}, function() {
+            // saved to storage
+            alert("Please make sure you are logged into Instagram in Chrome and entered the correct username into FreeBot Unfollow.");
+//            let background =  chrome.extension.getBackgroundPage();
+//            alert(background.tabUnfollowId);
+            chrome.runtime.sendMessage({action: "close_tab"}, function(response) {
+            });
+        });
+    }
 }
 
 function getFollowersElement() {
@@ -86,7 +174,7 @@ function deletelist(button_link){
 function random_between()
 {
     //var rand=Math.floor(Math.random()*(interval2-interval+1)+interval)
-    var rand=Math.floor(Math.random()*(62000)+58000) // random interval between 58 and 62 seconds
+    var rand=Math.floor(Math.random() * 10000 + 12000) // 
     console.log(rand)
     return rand;
 }
@@ -121,23 +209,31 @@ function unfollow_users(){
             console.log(screenname)
             console.log(doesinclude(screenname))
 
-            chrome.runtime.sendMessage({unfollow: screenname}, function(response) {
-                //console.log(response.farewell);
-              });
+            // unfollow user in separate tab
+            // chrome.runtime.sendMessage({unfollow: screenname}, function(response) {
+            //     //console.log(response.farewell);
+            // });
 
             if((computed_style=='rgb(38, 38, 38)') && !(doesinclude(screenname)))
             {
-//                console.log('Button clicked')
-//                button.click();
+               console.log('Button clicked')
+               button.click();
 				deletelist(buttonlinks[i]);
 				setTimeout(function(){ try{
 					var unfollow_button_arr=document.querySelectorAll('div[role="presentation"] button');
-					//unfollow_button_arr[unfollow_button_arr.length-2].click();
-					////document.querySelectorAll('div[role="presentation"] button')[1].click();
+                    unfollow_button_arr[unfollow_button_arr.length-2].click();
+                    
+                    //close following users window
+					//document.querySelectorAll('div[role="presentation"] button')[1].click();
 
+                    // google analytics: track unfollow count
+                    //_gaq.push(['_trackEvent', 'bot', 'unfollow']);
+                    chrome.runtime.sendMessage({analytics: "unfollow"}, function(response) {
+                    });            
                     igunfollowcount=igunfollowcount+1;
                     document.getElementById("igcnt").textContent=igunfollowcount;
 
+                    // update lifetime unfollows count
                     chrome.storage.sync.get('unfollows_lifetime', function(result) {
                         // set username field from storage
                         var lifetime_count = parseInt(result.unfollows_lifetime);
@@ -146,10 +242,30 @@ function unfollow_users(){
                             lifetime_count = 0;
                         }
                         lifetime_count += 1;
-                        // for test // alert(lifetime_count);
+
                         chrome.storage.sync.set({unfollows_lifetime: lifetime_count}, function() {
-                            // saved unfollows_lifetime to storage
+                            // saved to storage
                         });
+                    });
+
+                    // update daily date 
+                    let today = new Date().toLocaleDateString();
+                    chrome.storage.sync.set({unfollows_daily_date: today}, function() {
+                        // saved to storage
+                    });
+
+                    // update daily count 
+                    chrome.storage.sync.get('unfollows_daily_count', function(result) {
+                        let daily_count = parseInt(result.unfollows_daily_count);
+                        daily_count += 1;
+                        chrome.storage.sync.set({unfollows_daily_count: daily_count}, function() {
+                            // saved to storage
+                        });
+                        // check if unfollows for today reaches the max limit from Instagram
+                        if (daily_count >= unfollow_limit_today) {
+                            alert("FreeBot has unfollowed " + daily_count + " users for you today.\n\nYou're too close to Instagram's daily unfollow limits for FreeBot to keep going without risking your account being banned.\n\nPlease try again tomorrow.");
+                            stop("daily limit reached");
+                        }
                     });
                 } catch(e){} }, 1000);
             }
@@ -162,8 +278,11 @@ function unfollow_users(){
             
            
             if (i == buttonlinks.length-1)
-            {                
-                  setTimeout(function(){return unfollow_users()}, random_between());
+            {
+                let timeout = random_between();
+                //alert(timeout);
+                updateProgress(timeout);
+                //setTimeout(function(){return unfollow_users()}, timeout);
             }
               //deletelist(buttonlinks[i])
         }
@@ -204,15 +323,107 @@ function continueaction(){
     setTimeout(function(){continueaction()}, random_between(interval,interval2));            
 }
 
+function loadjscssfile(filename, filetype){
+    if (filetype=="js"){ //if filename is a external JavaScript file
+        var fileref=document.createElement('script')
+        fileref.setAttribute("type","text/javascript")
+        fileref.setAttribute("src", filename)
+    }
+    else if (filetype=="css"){ //if filename is an external CSS file
+        var fileref=document.createElement("link")
+        fileref.setAttribute("rel", "stylesheet")
+        fileref.setAttribute("type", "text/css")
+        fileref.setAttribute("href", filename)
+    }
+    if (typeof fileref!="undefined")
+        document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+
+var identity;
+function updateProgress(timeout) { 
+    var element = document.getElementById("myprogressBar");    
+    var width = 100.0; 
+    // total_timeout = 114751
+    //alert(timeout)
+    var timeout_remaining = timeout
+    let updateInterval = 100;
+    identity = setInterval(scene, updateInterval); 
+
+    function scene() { 
+      if (width <= 0) { 
+        clearInterval(identity); 
+        //width = 100.0;
+        unfollow_users();
+      } else { 
+        //width--;
+        //alert(1000 / timeout);
+        timeout_remaining -= updateInterval;
+        width = (timeout_remaining / timeout) * 100.0;
+      } 
+      //alert(width)
+      element.style.width = width + '%';  
+      //element.innerHTML = width * 1  + '%'; 
+    } 
+} 
+
 function addcountwidget(){  
     var counter = document.getElementById("counter")
     if (counter == null)
     {
-        var p_ele2=createElement('<div align="center" id="counter" style="z-index:2000;position: fixed;top:5em;right:1em;border-radius:20px 20px 20px 20px;background: #b500ed;width: 120px;height: 95px;color:white;" class="rounded"><table><tr><td align="center"><br/>Unfollowed</td></tr><tr><td><br/></td></tr><tr><td align="center"><span style="color:white;font-size: 35px;font-weight: bold;"id="igcnt">0</span></td></tr></table>')
+        // doesn't load
+        //loadjscssfile("progressbar.css", "css") ////dynamically load and add this .css file        
+
+        var p_ele2=createElement('<div align="center" id="counter" style="z-index:2000;position: fixed;top:5em;right:1em;border-radius:20px 20px 20px 20px;background: #b500ed;width: 120px;height: 110px;color:white;" class="rounded"><table><tr><td align="center"><br/>Unfollowed</td></tr><tr><td><br/></td></tr><tr><td align="center"><span style="color:white;font-size: 35px;font-weight:bold;"id="igcnt">0</span></td></tr><tr/></table>' +
+        '<div id="Progress_Status" style="width: 80%; background-color: #ddd; border-radius:5px 5px 5px 5px; margin-top: 10px; margin-bottom:10px;">' +
+        '<div id="myprogressBar"  style="width: 100%; height: 10px; border-radius:5px 5px 5px 5px; background-color: #4CAF50; text-align: center; line-height: 32px; color: black; "></div> ' +
+        '</div>' +
+        '</div>' +
+        // '<script>' +
+        //     'var element = document.getElementById("myprogressBar");' +
+        //     'var width = 1; ' +
+        //     'var identity = setInterval(scene, 10); ' +
+        //     'function scene() { ' +
+        //     '    if (width >= 100) { ' +
+        //     '    clearInterval(identity); ' +
+        //     '    } else { ' +
+        //     '    width++;  ' +
+        //     '    element.style.width = width + "%";  ' +
+        //     '    } ' +
+        //     '} ' +
+        // '</script> ' +
+        '');
+
+        // adds counter with heart below number
+        // var p_ele2=createElement('<div align="center" id="counter" style="z-index:2000;position: fixed;top:5em;right:1em;border-radius:20px 20px 20px 20px;background: #b500ed;width: 120px;height: 150px;color:white;" class="rounded"><table><tr><td align="center"><br/>Unfollowed</td></tr><tr><td><br/></td></tr><tr><td align="center"><span style="color:white;font-size: 35px;font-weight: bold;"id="igcnt">0</span></td></tr><tr/></table>' +
+        // '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" style="margin-bottom:10px;margin-top:10px">' +
+        // '<path fill-opacity="0" stroke-width="3" stroke="#bbb" d="M81.495,13.923c-11.368-5.261-26.234-0.311-31.489,11.032C44.74,13.612,29.879,8.657,18.511,13.923  C6.402,19.539,0.613,33.883,10.175,50.804c6.792,12.04,18.826,21.111,39.831,37.379c20.993-16.268,33.033-25.344,39.819-37.379  C99.387,33.883,93.598,19.539,81.495,13.923z"/>' +
+        // '<path id="heart-path" fill-opacity="0" stroke-width="5" stroke="#ED6A5A" d="M81.495,13.923c-11.368-5.261-26.234-0.311-31.489,11.032C44.74,13.612,29.879,8.657,18.511,13.923  C6.402,19.539,0.613,33.883,10.175,50.804c6.792,12.04,18.826,21.111,39.831,37.379c20.993-16.268,33.033-25.344,39.819-37.379  C99.387,33.883,93.598,19.539,81.495,13.923z"/>' +
+        // '</svg>' +
+        // '</div>');
         document.getElementsByTagName("body")[0].appendChild(p_ele2)
+
+        //updateProgress(50);
+
+        // progressbar.js@1.0.0 version is used
+        // Docs: http://progressbarjs.readthedocs.org/en/1.0.0/
+
+        // var bar = new ProgressBar.Path('#heart-path', {
+        //     easing: 'easeInOut',
+        //     duration: 1400
+        // });
+        
+        // bar.set(0);
+        // bar.animate(1.0);  // Number from 0.0 to 1.0
+
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+function progressUpdate() {
+
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 /* function addadwidget(txt,img,lnk){ 
 try{
@@ -331,8 +542,14 @@ function addaadswidget(){
    document.getElementsByTagName("body")[0].appendChild(p_ele3)
 }
 
-function stop() {
-    throw new Error();
+function stop(reason) {
+    clearInterval(identity); 
+
+    chrome.storage.sync.set({status: reason}, function() {
+        // saved to storage
+      });
+
+    //throw new Error();
 }
 
 //<iframe data-aa='1062397' src='//ad.a-ads.com/1062397?size=120x240&background_color=e00000&text_color=ffffff&title_color=ffffff&link_color=f93e64' scrolling='no' style='width:120px; height:240px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>
