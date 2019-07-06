@@ -5,7 +5,7 @@
     if (!location.ancestorOrigins.contains(extensionOrigin)) {
         var iframe = document.createElement('iframe');
         // Must be declared at web_accessible_resources in manifest.json
-        iframe.src = chrome.runtime.getURL('frame.html');
+        iframe.src = chrome.runtime.getURL('/ads/aads.html');
         iframe.onload = unfollowUser();
         // Some styles for a fancy sidebar
         iframe.style.cssText = 'position:fixed;top:0;left:0;display:block;' +

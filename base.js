@@ -52,16 +52,50 @@ function unfollow_start(reason) {
 
     var extensionOrigin = 'chrome-extension://' + chrome.runtime.id;
     if (!location.ancestorOrigins.contains(extensionOrigin)) {
+
+        // add amazon banner frame 160x600
+        iframe_append('/ads/amazon-160x600.html',  
+        'position:fixed;top:100px;left:0px;display:block;' +
+        'width:160px; height:600px; z-index:1000;');
+
+        // add exoclick frame
+        iframe_append('/ads/exoclick.html', 
+        'position:fixed;top:0px;left:0px;display:block;' + 
+        'width:728px; height:90px; z-index:1000;');
+
+        // add aad frame
+        iframe_append('/ads/aads.html', 
+        'position:fixed;top:100px;left:170px;display:block;' + 
+        'width:140px; height:260px; z-index:1000;');
+
+        // add getresponse frame
+        iframe_append('/ads/getresponse.html',  
+        'position:fixed;top:360px;left:170px;display:block;' +
+        'width:300px; height:250px; z-index:1000;');
+
+        // add amazon banner frame 300x250
+        // iframe_append('/ads/amazon-300x250.html',  
+        // 'position:fixed;top:620px;left:170px;display:block;' +
+        // 'width:300px; height:250px; z-index:1000;');
+
+        // // add ad-maven frame
+        // iframe_append('/ads/admaven.html',  
+        // 'position:fixed;top:270px;left:0px;display:block;' +
+        // 'width:300px; height:250px; z-index:1000;');
+
+        // open follower window and start bot
+        openFollowersWindow();
+    }
+}
+
+function iframe_append(url, css) {
+        // add iframe
         var iframe = document.createElement('iframe');
         // Must be declared at web_accessible_resources in manifest.json
-        iframe.src = chrome.runtime.getURL('frame.html');
-        iframe.onload = openFollowersWindow();
-        // Some styles for a fancy sidebar
-        iframe.style.cssText = 'position:fixed;top:0;left:0;display:block;' +
-                            'width:140px; height:260px; z-index:1000;';
+        iframe.src = chrome.runtime.getURL(url);
+        // add css
+        iframe.style.cssText = css;
         document.body.appendChild(iframe);
-        //iframe.contentWindow.onload = openFollowersWindow();
-    }
 }
 
 function openFollowersWindow() {
@@ -339,7 +373,7 @@ function addcountwidget(){
         // doesn't load
         //loadjscssfile("progressbar.css", "css") ////dynamically load and add this .css file        
 
-        var p_ele2=createElement('<div align="center" id="counter" style="z-index:2000;position: fixed;top:5em;right:1em;border-radius:20px 20px 20px 20px;background: #b500ed;width: 120px;height: 110px;color:white;" class="rounded"><table><tr><td align="center"><br/>Unfollowed</td></tr><tr><td><br/></td></tr><tr><td align="center"><span style="color:white;font-size: 35px;font-weight: bold;"id="igcnt">0</span></td></tr><tr/></table>' +
+        var p_ele2=createElement('<div align="center" id="counter" style="z-index:2000;position: fixed;top:5em;right:1em;border-radius:20px 20px 20px 20px;background: #b500ed;width: 120px;height: 110px;color:white;" class="rounded"><table><tr><td align="center"><br/>Unfollowed</td></tr><tr><td><br/></td></tr><tr><td align="center"><span style="color:white;font-size: 35px;font-weight:bold;"id="igcnt">0</span></td></tr><tr/></table>' +
         '<div id="Progress_Status" style="width: 80%; background-color: #ddd; border-radius:5px 5px 5px 5px; margin-top: 10px; margin-bottom:10px;">' +
         '<div id="myprogressBar"  style="width: 100%; height: 10px; border-radius:5px 5px 5px 5px; background-color: #4CAF50; text-align: center; line-height: 32px; color: black; "></div> ' +
         '</div>' +
