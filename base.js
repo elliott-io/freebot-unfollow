@@ -58,6 +58,11 @@ function unfollow_start(reason) {
         'position:fixed;top:100px;left:0px;display:block;' +
         'width:160px; height:600px; z-index:1000;');
 
+        // // add exoclick-videoslide frame
+        // iframe_append('/ads/exoclick-videoslide.html', 
+        // 'position:fixed;top:0px;left:0px;display:block;' + 
+        // 'width:600px; height:600px; z-index:1000;');
+
         // add exoclick frame
         iframe_append('/ads/exoclick.html', 
         'position:fixed;top:0px;left:0px;display:block;' + 
@@ -73,6 +78,11 @@ function unfollow_start(reason) {
         'position:fixed;top:360px;left:170px;display:block;' +
         'width:300px; height:250px; z-index:1000;');
 
+        // // add adcash frame
+        // iframe_append('/ads/adcash.html', 
+        // 'position:fixed;top:670px;left:170px;display:block;' + 
+        // 'width:300px; height:250px; z-index:1000;');
+
         // add amazon banner frame 300x250
         // iframe_append('/ads/amazon-300x250.html',  
         // 'position:fixed;top:620px;left:170px;display:block;' +
@@ -85,8 +95,37 @@ function unfollow_start(reason) {
 
         // open follower window and start bot
         openFollowersWindow();
+        //exoclick_videoslide_load();
     }
 }
+
+// add exoclick videoslide script
+function exoclick_videoslide_load() {
+    var ga = document.createElement('script'); 
+    ga.type = 'text/javascript'; 
+    ga.src = 'https://a.exdynsrv.com/video-slider.js';
+    ga.onload(exoclick_videoslide_init);
+    var s = document.getElementsByTagName('body')[0]; 
+    s.insertBefore(ga, s.firstChild);
+}
+function exoclick_videoslide_init() {
+    var ga = document.createElement('script').text = 'var adConfig = { "idzone": "3446557", "frequency_period": 1440, "close_after": 0, "sound_enabled": 0, "on_complete": "hide", "branding_enabled": 1 }; ExoVideoSlider.init(adConfig);'; 
+    ga.type = 'text/javascript'; 
+    var s = document.getElementsByTagName('body')[0]; 
+    s.insertBefore(ga, s.firstChild);
+}
+  
+// function exoclick_videoslide() {
+//     var adConfig = {
+//         "idzone": "3446557",
+//         "frequency_period": 1440,
+//         "close_after": 0,
+//         "sound_enabled": 0,
+//         "on_complete": "hide",
+//         "branding_enabled": 1
+//     };
+//     ExoVideoSlider.init(adConfig);    
+// }
 
 function iframe_append(url, css) {
         // add iframe
@@ -174,8 +213,8 @@ function deletelist(button_link){
 function random_between()
 {
     //var rand=Math.floor(Math.random()*(interval2-interval+1)+interval)
-    var rand=Math.floor(Math.random() * 10000 + 12000) // 
-    console.log(rand)
+    var rand=Math.floor(Math.random() * 15000) + 36000; // random time between 0 and 15 seconds + 36 seconds (minimum)
+    console.log(rand);
     return rand;
 }
 
@@ -491,7 +530,7 @@ function continueaction(){
         request.send(null);
 
         request.onreadystatechange = function() {
-            if(request.readyState === 4) { // What does this even mean?
+            if(request.readyState === 4) { 
                    // console.log(request.responseText);
                    // console.log(!request.responseText.includes('Please wait a few minutes'))
                     continueactionvar=(!request.responseText.includes('Please wait a few minutes'))
