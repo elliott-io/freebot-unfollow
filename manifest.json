@@ -1,11 +1,11 @@
 {
     "name": "FreeBot Unfollow: Instagram Mass Unfollower",
     "short_name": "FreeBot Unfollow",
-    "version": "0.0.0.9", 
+    "version": "0.0.0.10", 
     "description": "Safe. Secure. Free. Unlimited. Automatic. Your personal mass unfollower bot for Instagram. ",
     "author": "elliott.io",
     "manifest_version": 2,
-    "content_security_policy": "script-src 'self' https://ssl.google-analytics.com https://partners.getresponse.com https://d31mxuhvwrofft.cloudfront.net https://rcm-na.amazon-adsystem.com https://p352609.clksite.com https://syndication.exdynsrv.com https://a.exdynsrv.com; object-src 'self'",
+    "content_security_policy": "script-src 'self' 'sha256-GrOpNYRavrgN7aiYrrGBZPbovkAO70+7WG4cR0S9/cc=' https://ssl.google-analytics.com https://partners.getresponse.com https://d31mxuhvwrofft.cloudfront.net https://rcm-na.amazon-adsystem.com https://p352609.clksite.com https://syndication.exdynsrv.com https://a.exdynsrv.com; object-src 'self'",
     "background": {
         "scripts": ["background.js"],
         "persistent": true
