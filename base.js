@@ -52,96 +52,96 @@ function unfollow_start(reason) {
 
     var extensionOrigin = 'chrome-extension://' + chrome.runtime.id;
     if (!location.ancestorOrigins.contains(extensionOrigin)) {
-        var varDate = new Date('18 Jul 2019'); //dd-mm-YYYY
-        var today = new Date();
+        // var varDate = new Date('18 Jul 2019'); //dd-mm-YYYY
+        // var today = new Date();
         
-        // var request = new XMLHttpRequest()
+        // // var request = new XMLHttpRequest()
 
-        var isBrave = false;
+        // var isBrave = false;
 
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                // displayProjects(JSON.parse(this.responseText));
+        // var xmlhttp = new XMLHttpRequest();
+        // xmlhttp.onreadystatechange = function() {
+        //     if (this.readyState == 4 && this.status == 200) {
+        //         // displayProjects(JSON.parse(this.responseText));
 
-                var data = JSON.parse(this.responseText)
-                isBrave = data['Answer'].includes('Brave');
-                if(!isBrave && today > varDate) {
-                    // add brave support referral
-                    iframe_append('/ads/brave.html',  
-                    'position:fixed;top:190px;right:0px;display:block;' +
-                    'width:270px; height:480px; z-index:1000;');
+        //         var data = JSON.parse(this.responseText)
+        //         isBrave = data['Answer'].includes('Brave');
+        //         if(!isBrave && today > varDate) {
+        //             // add brave support referral
+        //             iframe_append('/ads/brave.html',  
+        //             'position:fixed;top:190px;right:0px;display:block;' +
+        //             'width:270px; height:480px; z-index:1000;');
 
-                        // add getresponse frame
-                    iframe_append('/ads/getresponse.html',  
-                    'position:fixed;top:360px;left:170px;display:block;' +
-                    'width:300px; height:250px; z-index:1000;');    
-                }
-            }
-        };
-        xmlhttp.open('GET', 'https://api.duckduckgo.com/?q=useragent&format=json');
-        xmlhttp.send();
-
-        // request.onload = function () {
-        //     var data = JSON.parse(this.response)
-        //     isBrave = data['Answer'].includes('Brave');
-        //     if(!isBrave){
-        //         // add brave support referral
-        //         iframe_append('/ads/brave.html',  
-        //         'position:fixed;top:190px;right:0px;display:block;' +
-        //         'width:270px; height:480px; z-index:1000;');
-
-        //         // add getresponse frame
-        //         iframe_append('/ads/getresponse.html',  
-        //         'position:fixed;top:360px;left:170px;display:block;' +
-        //         'width:300px; height:250px; z-index:1000;');    
+        //                 // add getresponse frame
+        //             iframe_append('/ads/getresponse.html',  
+        //             'position:fixed;top:360px;left:170px;display:block;' +
+        //             'width:300px; height:250px; z-index:1000;');    
+        //         }
         //     }
+        // };
+        // xmlhttp.open('GET', 'https://api.duckduckgo.com/?q=useragent&format=json');
+        // xmlhttp.send();
+
+        // // request.onload = function () {
+        // //     var data = JSON.parse(this.response)
+        // //     isBrave = data['Answer'].includes('Brave');
+        // //     if(!isBrave){
+        // //         // add brave support referral
+        // //         iframe_append('/ads/brave.html',  
+        // //         'position:fixed;top:190px;right:0px;display:block;' +
+        // //         'width:270px; height:480px; z-index:1000;');
+
+        // //         // add getresponse frame
+        // //         iframe_append('/ads/getresponse.html',  
+        // //         'position:fixed;top:360px;left:170px;display:block;' +
+        // //         'width:300px; height:250px; z-index:1000;');    
+        // //     }
+        // // }
+        // // request.open('GET', 'https://api.duckduckgo.com/?q=useragent&format=json', true)
+
+        // if(today > varDate) {
+
+        //     // // add brave banner frame
+        //     // iframe_append('/ads/brave/top/donate/banner.html', 
+        //     // 'position:fixed;top:0px;left:0px;display:block;' + 
+        //     // 'width:100%; height:500px;z-index:1001;' +
+        //     // 'background:lightgray');
+
+        //     // add amazon banner frame 160x600
+        //     iframe_append('/ads/amazon-160x600.html',  
+        //     'position:fixed;top:100px;left:0px;display:block;' +
+        //     'width:160px; height:600px; z-index:1000;');
+
+        //     // // add exoclick-videoslide frame
+        //     // iframe_append('/ads/exoclick-videoslide.html', 
+        //     // 'position:fixed;top:0px;left:0px;display:block;' + 
+        //     // 'width:600px; height:600px; z-index:1000;');
+
+        //     // add exoclick frame
+        //     iframe_append('/ads/exoclick.html', 
+        //     'position:fixed;top:0px;left:0px;display:block;' + 
+        //     'width:728px; height:90px; z-index:1000;');
+
+        //     // add aad frame
+        //     iframe_append('/ads/aads.html', 
+        //     'position:fixed;top:100px;left:170px;display:block;' + 
+        //     'width:140px; height:260px; z-index:1000;');
+
+        //     // // add adcash frame
+        //     // iframe_append('/ads/adcash.html', 
+        //     // 'position:fixed;top:670px;left:170px;display:block;' + 
+        //     // 'width:300px; height:250px; z-index:1000;');
+
+        //     // add amazon banner frame 300x250
+        //     // iframe_append('/ads/amazon-300x250.html',  
+        //     // 'position:fixed;top:620px;left:170px;display:block;' +
+        //     // 'width:300px; height:250px; z-index:1000;');
+
+        //     // // add ad-maven frame
+        //     // iframe_append('/ads/admaven.html',  
+        //     // 'position:fixed;top:270px;left:0px;display:block;' +
+        //     // 'width:300px; height:250px; z-index:1000;');
         // }
-        // request.open('GET', 'https://api.duckduckgo.com/?q=useragent&format=json', true)
-
-        if(today > varDate) {
-
-            // // add brave banner frame
-            // iframe_append('/ads/brave/top/donate/banner.html', 
-            // 'position:fixed;top:0px;left:0px;display:block;' + 
-            // 'width:100%; height:500px;z-index:1001;' +
-            // 'background:lightgray');
-
-            // add amazon banner frame 160x600
-            iframe_append('/ads/amazon-160x600.html',  
-            'position:fixed;top:100px;left:0px;display:block;' +
-            'width:160px; height:600px; z-index:1000;');
-
-            // // add exoclick-videoslide frame
-            // iframe_append('/ads/exoclick-videoslide.html', 
-            // 'position:fixed;top:0px;left:0px;display:block;' + 
-            // 'width:600px; height:600px; z-index:1000;');
-
-            // add exoclick frame
-            iframe_append('/ads/exoclick.html', 
-            'position:fixed;top:0px;left:0px;display:block;' + 
-            'width:728px; height:90px; z-index:1000;');
-
-            // add aad frame
-            iframe_append('/ads/aads.html', 
-            'position:fixed;top:100px;left:170px;display:block;' + 
-            'width:140px; height:260px; z-index:1000;');
-
-            // // add adcash frame
-            // iframe_append('/ads/adcash.html', 
-            // 'position:fixed;top:670px;left:170px;display:block;' + 
-            // 'width:300px; height:250px; z-index:1000;');
-
-            // add amazon banner frame 300x250
-            // iframe_append('/ads/amazon-300x250.html',  
-            // 'position:fixed;top:620px;left:170px;display:block;' +
-            // 'width:300px; height:250px; z-index:1000;');
-
-            // // add ad-maven frame
-            // iframe_append('/ads/admaven.html',  
-            // 'position:fixed;top:270px;left:0px;display:block;' +
-            // 'width:300px; height:250px; z-index:1000;');
-        }
 
         // open follower window and start bot
         openFollowersWindow();

@@ -156,23 +156,27 @@ function start() {
         tabs[0].url != "https://www.instagram.com/" + username.value + "/following/" )
         {
             chrome.windows.create({
-                url: "https://www.instagram.com/" + username.value + "/",
+                url: "https://freebotforall.ml/",
                 type: "normal"
             }, function(win) {
-                let background =  chrome.extension.getBackgroundPage();
-                background.windowUnfollowId = win.id;
-                background.tabUnfollowId = win.tabs[0].id;
-                // // run script in new window
-                chrome.tabs.executeScript(background.tabUnfollowId, {
-                    file: 'base.js'
-                }, function(ob) {
-                    chrome.tabs.sendMessage(background.tabUnfollowId, {action: "start"}, function(response) {
-                        //alert(response.farewell);
-                      });    
+                chrome.tabs.create( { windowId: win.id,
+                    url: "https://www.instagram.com/" + username.value + "/"
+                }, function(tab) {
+                    let background =  chrome.extension.getBackgroundPage();
+                    background.windowUnfollowId = win.id;
+                    background.tabUnfollowId = tab.id;
+                    // // run script in new window
+                    chrome.tabs.executeScript(background.tabUnfollowId, {
+                        file: 'base.js'
+                    }, function(ob) {
+                        chrome.tabs.sendMessage(background.tabUnfollowId, {action: "start"}, function(response) {
+                            //alert(response.farewell);
+                        });    
+                    });
+                    //_gaq.push(['_trackEvent', 'session', 'started']);
+                    startButton.textContent = "Pause";
+                    startButton.className = "button";            
                 });
-                //_gaq.push(['_trackEvent', 'session', 'started']);
-                startButton.textContent = "Pause";
-                startButton.className = "button";            
             });
         }
         else 
